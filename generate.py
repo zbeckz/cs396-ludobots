@@ -1,20 +1,23 @@
 import pyrosim.pyrosim as pyrosim
 
-pyrosim.Start_SDF("boxes.sdf")
+# makes a tower of 10 boxes, with each higher box being 90% the size of the one below it, with base at (x, y, 0)
+def makeTower(x, y):
+    for i in range(10):
+        z = 0.5 + i             # each block placed on top of one before it
+        length = 1 * 0.9**i     # each block 90% size of one before it
+        width = 1 * 0.9**i
+        height = 1 * 0.9**i
+        pyrosim.Send_Cube(name="Box " + str(i+1), pos=[x,y,z] , size=[length,width,height])
 
-# first box
-x = 0
-y = 0
-z = 0.5
-length = 1
-width = 1
-height = 1
-pyrosim.Send_Cube(name="Box", pos=[x,y,z] , size=[length,width,height])
+def main():
+    pyrosim.Start_SDF("boxes.sdf")
 
-# second box
-x = 1
-y = 0
-z = 1.5
-pyrosim.Send_Cube(name="Box2", pos=[x,y,z] , size=[length,width,height])
+    # generate a 5 by 5 grid of towers
+    for i in range(-2, 3):
+        for j in range(-2, 3):
+            makeTower(i, j)
 
-pyrosim.End()
+    pyrosim.End()    
+
+if __name__ == "__main__":
+    main()
