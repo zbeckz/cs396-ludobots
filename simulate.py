@@ -3,7 +3,8 @@ import time
 
 physicsClient = p.connect(p.GUI)
 
-# load box into the world
+# load world
+p.setGravity(0,0,-9.8)
 p.loadSDF("box.sdf")
 
 # show the world for some time
