@@ -24,4 +24,4 @@ for i in range(1000):
     time.sleep(1/60)
 
 p.disconnect()
-np.save("data/TaskF", backLegSensorValues)
+np.save("data/backLegSensorValues", backLegSensorValues)
