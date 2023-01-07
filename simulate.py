@@ -18,10 +18,13 @@ pyrosim.Prepare_To_Simulate(robotId)
 
 # simulate the world
 backLegSensorValues = np.zeros(1000)
+frontLegSensorValues = np.zeros(1000)
 for i in range(1000): 
     p.stepSimulation()
     backLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("BackLeg")
+    frontLegSensorValues[i] = pyrosim.Get_Touch_Sensor_Value_For_Link("FrontLeg")
     time.sleep(1/60)
 
 p.disconnect()
 np.save("data/backLegSensorValues", backLegSensorValues)
+np.save("data/frontLegSensorValues", frontLegSensorValues)
