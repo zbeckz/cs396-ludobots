@@ -1,3 +1,4 @@
 data
 *.urdf
 *.sdf
+__pycache__
