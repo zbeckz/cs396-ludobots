@@ -13,6 +13,8 @@ class MOTOR:
         self.amplitude = c.amplitude
         self.frequency = c.frequency
         self.offset = c.offset
+        if self.jointName == "Torso_BackLeg":
+            self.frequency = self.frequency * 0.5 
         self.values = self.amplitude * np.sin(self.frequency * np.arange(0, 2*np.pi, 2*np.pi/c.iterations) + self.offset)
 
     def Set_Value(self, robotId, step):
