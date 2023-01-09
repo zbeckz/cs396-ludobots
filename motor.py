@@ -21,3 +21,6 @@ class MOTOR:
                                     controlMode = p.POSITION_CONTROL, 
                                     targetPosition = self.values[step], 
                                     maxForce = c.maxForce)
+
+    def Save_Values(self):
+        np.save("data/" + self.jointName + "MotorValues", self.values)
