@@ -1,7 +1,7 @@
 import numpy as np
 
 gravity = -9.8
-maxForce = 35
+maxForce = 25
 
 iterations = 1000
 
