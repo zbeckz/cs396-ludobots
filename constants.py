@@ -1,5 +1,6 @@
 import numpy as np
 
 gravity = -9.8
-maxForce = 25
-iterations = 250
+maxForce = 35
+iterations = 1000
+numberOfGenerations = 10
