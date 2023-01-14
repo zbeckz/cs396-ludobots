@@ -15,7 +15,7 @@ class SOLUTION:
 
     def Evaluate(self, directOrGUI):
         self.Create_Brain()
-        os.system(f"start /B python simulate.py {directOrGUI} {self.myID}")
+        os.system(f"start /B python simulate.py {directOrGUI} {self.myID} >nul 2>&1")
         while not os.path.exists(f"fitness{self.myID}.txt"):
             time.sleep(0.01)
         f = open(f"fitness{self.myID}.txt", "r")
@@ -24,7 +24,7 @@ class SOLUTION:
     
     def Start_Simulation(self, directOrGUI):
         self.Create_Brain()
-        os.system(f"start /B python simulate.py {directOrGUI} {self.myID}")
+        os.system(f"start /B python simulate.py {directOrGUI} {self.myID} >nul 2>&1")
 
     def Wait_For_Simulation_To_End(self):
         while not os.path.exists(f"fitness{self.myID}.txt"):
