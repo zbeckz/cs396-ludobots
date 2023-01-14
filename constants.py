@@ -5,5 +5,5 @@ maxForce = 35
 iterations = 1000
 numberOfGenerations = 1
 populationSize = 1
-numSensorNeurons = 3
-numMotorNeurons = 2
+numSensorNeurons = 5
+numMotorNeurons = 4
