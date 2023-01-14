@@ -3,5 +3,7 @@ import numpy as np
 gravity = -9.8
 maxForce = 35
 iterations = 1000
-numberOfGenerations = 10
-populationSize = 10
+numberOfGenerations = 1
+populationSize = 1
+numSensorNeurons = 3
+numMotorNeurons = 2
