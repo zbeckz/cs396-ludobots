@@ -41,7 +41,10 @@ class ROBOT:
         self.nn.Update()
 
     def Get_Fitness(self, id):
+        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
+        basePosition = basePositionAndOrientation[0]
+        xPosition = basePosition[2]
         f = open(f"tmp{id}.txt", "w")
-        f.write(str(p.getLinkState(self.robotId, 0)[0][0]))
+        f.write(str(xPosition))
         f.close()
         os.rename(f"tmp{id}.txt", f"fitness{id}.txt")
