@@ -3,3 +3,4 @@ data
 *.sdf
 __pycache__
 *.nndf
+*.txt
