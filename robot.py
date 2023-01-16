@@ -44,7 +44,7 @@ class ROBOT:
         self.nn.Update()
 
     def Get_Fitness(self, id):
-        fitness = self.__jumpingFitnessEightLegs()
+        fitness = self.__jumpingFitnessFourLegs()
         f = open(f"tmp{id}.txt", "w")
         f.write(str(fitness))
         f.close()

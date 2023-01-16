@@ -7,12 +7,12 @@ numberOfGenerations = 10
 populationSize = 10
 
 # 4 legged
-# numSensorNeurons = 5
-# numMotorNeurons = 8
+numSensorNeurons = 5
+numMotorNeurons = 8
 
 # 8 legged
-numSensorNeurons = 9
-numMotorNeurons = 16
+# numSensorNeurons = 9
+# numMotorNeurons = 16
 
 motorJointRange = 0.2
 x = 22.2
