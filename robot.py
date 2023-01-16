@@ -5,6 +5,7 @@ import pybullet as p
 from pyrosim.neuralNetwork import NEURAL_NETWORK
 import os
 import constants as c
+import numpy as np
 
 class ROBOT:
 
@@ -43,10 +44,45 @@ class ROBOT:
         self.nn.Update()
 
     def Get_Fitness(self, id):
-        basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
-        basePosition = basePositionAndOrientation[0]
-        xPosition = basePosition[0]
+        fitness = self.__jumpingFitnessEightLegs()
         f = open(f"tmp{id}.txt", "w")
-        f.write(str(xPosition))
+        f.write(str(fitness))
         f.close()
         os.rename(f"tmp{id}.txt", f"fitness{id}.txt")
+
+    # param 0 means x, 1 means y, 2 means z
+    def __distanceFitness(self, param):
+        return p.getBasePositionAndOrientation(self.robotId)[0][param]
+
+    # returns the length of longest chain where all legs sensors are -1 (not touching the ground)
+    def __jumpingFitnessFourLegs(self):
+        longestRun = 0
+        currentRun = 0
+        for i in range(c.iterations):
+            if self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1:
+                currentRun += 1
+            else:
+                if currentRun > longestRun:
+                    longestRun = currentRun
+                currentRun = 0
+
+        if currentRun > longestRun:
+            return currentRun
+        else:
+            return longestRun
+
+    def __jumpingFitnessEightLegs(self):
+        longestRun = 0
+        currentRun = 0
+        for i in range(c.iterations):
+            if self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1 and self.sensors["FrontRightLowerLeg"].values[i] == -1 and self.sensors["FrontLeftLowerLeg"].values[i] == -1 and self.sensors["BackRightLowerLeg"].values[i] == -1 and self.sensors["BackLeftLowerLeg"].values[i] == -1:
+                currentRun += 1
+            else:
+                if currentRun > longestRun:
+                    longestRun = currentRun
+                currentRun = 0
+
+        if currentRun > longestRun:
+            return currentRun
+        else:
+            return longestRun

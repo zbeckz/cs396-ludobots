@@ -26,6 +26,7 @@ class SOLUTION:
     def Start_Simulation(self, directOrGUI):
         self.Create_Brain()
         os.system(f"start /B python simulate.py {directOrGUI} {self.myID} >nul 2>&1")
+        # os.system(f"start /B python simulate.py {directOrGUI} {self.myID}")
 
     def Wait_For_Simulation_To_End(self):
         while not os.path.exists(f"fitness{self.myID}.txt"):
@@ -56,6 +57,16 @@ class SOLUTION:
         pyrosim.Send_Sensor_Neuron(name = 8, linkName = "BackLeftLowerLeg")
 
         # motor neurons for middle legs
+
+        # pyrosim.Send_Motor_Neuron(name = 5, jointName = "Torso_BackLeg")
+        # pyrosim.Send_Motor_Neuron(name = 6, jointName = "Torso_FrontLeg")
+        # pyrosim.Send_Motor_Neuron(name = 7, jointName = "Torso_LeftLeg")
+        # pyrosim.Send_Motor_Neuron(name = 8, jointName = "Torso_RightLeg")
+        # pyrosim.Send_Motor_Neuron(name = 9, jointName = "FrontLeg_FrontLowerLeg")
+        # pyrosim.Send_Motor_Neuron(name = 10, jointName = "BackLeg_BackLowerLeg")
+        # pyrosim.Send_Motor_Neuron(name = 11, jointName = "LeftLeg_LeftLowerLeg")
+        # pyrosim.Send_Motor_Neuron(name = 12, jointName = "RightLeg_RightLowerLeg")
+
         pyrosim.Send_Motor_Neuron(name = 9, jointName = "Torso_BackLeg")
         pyrosim.Send_Motor_Neuron(name = 10, jointName = "Torso_FrontLeg")
         pyrosim.Send_Motor_Neuron(name = 11, jointName = "Torso_LeftLeg")
