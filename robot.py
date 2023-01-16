@@ -22,8 +22,10 @@ class ROBOT:
             self.sensors[linkName] = SENSOR(linkName)
 
     def Sense(self, step):
+        counter = 0
         for sensor in self.sensors.values():
-            sensor.Get_Value(step)
+            sensor.Get_Value(step, counter)
+            counter += 1
 
     def Prepare_To_Act(self):
         self.motors = {}
@@ -43,7 +45,7 @@ class ROBOT:
     def Get_Fitness(self, id):
         basePositionAndOrientation = p.getBasePositionAndOrientation(self.robotId)
         basePosition = basePositionAndOrientation[0]
-        xPosition = basePosition[2]
+        xPosition = basePosition[0]
         f = open(f"tmp{id}.txt", "w")
         f.write(str(xPosition))
         f.close()
