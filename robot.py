@@ -17,22 +17,26 @@ class ROBOT:
         self.Prepare_To_Act()
         os.system(f"del brain{solID}.nndf")
 
+    # generate the sensors
     def Prepare_To_Sense(self):
         self.sensors = {}
         for linkName in pyrosim.linkNamesToIndices:
             self.sensors[linkName] = SENSOR(linkName)
 
+    # tell each sensor to check its value
     def Sense(self, step):
         counter = 0
         for sensor in self.sensors.values():
-            sensor.Get_Value(step, counter)
+            sensor.Get_Value(step, counter) # counter to tell the sensor function what sensor it is
             counter += 1
 
+    # generate the motors
     def Prepare_To_Act(self):
         self.motors = {}
         for jointName in pyrosim.jointNamesToIndices:
             self.motors[jointName] = MOTOR(jointName)
 
+    # move joints based on motor neuron values
     def Act(self, step):
         for neuronName in self.nn.Get_Neuron_Names():
             if self.nn.Is_Motor_Neuron(neuronName):
@@ -43,8 +47,10 @@ class ROBOT:
     def Think(self):
         self.nn.Update()
 
+    # calculate fitness value and write to a file
     def Get_Fitness(self, id):
-        fitness = self.__jumpingFitnessFourLegs()
+        fitness = self.__jumpingFitness(c.numSensorNeurons - 1) # jumping with either 4 or 8 legs
+        # fitness = self.__distanceFitness(0) * -1              # distance fitness
         f = open(f"tmp{id}.txt", "w")
         f.write(str(fitness))
         f.close()
@@ -55,11 +61,11 @@ class ROBOT:
         return p.getBasePositionAndOrientation(self.robotId)[0][param]
 
     # returns the length of longest chain where all legs sensors are -1 (not touching the ground)
-    def __jumpingFitnessFourLegs(self):
+    def __jumpingFitness(self, legs):
         longestRun = 0
         currentRun = 0
         for i in range(c.iterations):
-            if self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1:
+            if self.__jumpingCondition(i, legs):
                 currentRun += 1
             else:
                 if currentRun > longestRun:
@@ -71,18 +77,8 @@ class ROBOT:
         else:
             return longestRun
 
-    def __jumpingFitnessEightLegs(self):
-        longestRun = 0
-        currentRun = 0
-        for i in range(c.iterations):
-            if self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1 and self.sensors["FrontRightLowerLeg"].values[i] == -1 and self.sensors["FrontLeftLowerLeg"].values[i] == -1 and self.sensors["BackRightLowerLeg"].values[i] == -1 and self.sensors["BackLeftLowerLeg"].values[i] == -1:
-                currentRun += 1
-            else:
-                if currentRun > longestRun:
-                    longestRun = currentRun
-                currentRun = 0
-
-        if currentRun > longestRun:
-            return currentRun
+    def __jumpingCondition(self, i, legs):
+        if legs == 4:
+            return self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1
         else:
-            return longestRun
+            return self.sensors["FrontLowerLeg"].values[i] == -1 and self.sensors["BackLowerLeg"].values[i] == -1 and self.sensors["RightLowerLeg"].values[i] == -1 and self.sensors["LeftLowerLeg"].values[i] == -1 and self.sensors["FrontRightLowerLeg"].values[i] == -1 and self.sensors["FrontLeftLowerLeg"].values[i] == -1 and self.sensors["BackRightLowerLeg"].values[i] == -1 and self.sensors["BackLeftLowerLeg"].values[i] == -1

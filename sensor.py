@@ -13,7 +13,9 @@ class SENSOR:
 
     def Get_Value(self, step, counter):
         self.values[step] = pyrosim.Get_Touch_Sensor_Value_For_Link(self.linkName)
-        if counter == 1:
+
+        # this is to induce oscillatory behavior
+        if counter == 1: # 1 because that means this is the torso sensor
             self.values[step] = np.sin(c.x * step)
 
     def Save_Values(self):
