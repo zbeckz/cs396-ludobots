@@ -3,8 +3,8 @@ import numpy as np
 gravity = -9.8
 maxForce = 100
 iterations = 1000
-numberOfGenerations = 2
-populationSize = 2
+numberOfGenerations = 10
+populationSize = 10
 
 # 4 legged
 numSensorNeurons = 5
