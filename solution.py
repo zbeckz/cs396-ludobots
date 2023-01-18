@@ -38,56 +38,20 @@ class SOLUTION:
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
         
-        pyrosim.Send_Sensor_Neuron(name = 0, linkName = "Torso")     
+        # torso sensor
+        pyrosim.Send_Sensor_Neuron(name = 0, linkName = "Torso")
 
-        # sensor neurons for 4 legs that start from middle of torso
-        pyrosim.Send_Sensor_Neuron(name = 1, linkName = "FrontLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name = 2, linkName = "BackLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name = 3, linkName = "LeftLowerLeg")
-        pyrosim.Send_Sensor_Neuron(name = 4, linkName = "RightLowerLeg")
+        # create neurons
+        for i in range(c.numLegs):
+            name = c.legNames[i]
+            pyrosim.Send_Sensor_Neuron(name = i + 1, linkName = f"{name}LowerLeg") # sensor neurons
+            pyrosim.Send_Motor_Neuron(name = i + c.numSensorNeurons, jointName = f"Torso_{name}Leg") # torso to leg joints
+            pyrosim.Send_Motor_Neuron(name = i + c.numMotorNeurons, jointName = f"{name}Leg_{name}LowerLeg")
 
-        # if its 4 legged vs 8 legged
-        if c.numSensorNeurons == 5:
-            # motor neurons for middle legs
-            pyrosim.Send_Motor_Neuron(name = 5, jointName = "Torso_BackLeg")
-            pyrosim.Send_Motor_Neuron(name = 6, jointName = "Torso_FrontLeg")
-            pyrosim.Send_Motor_Neuron(name = 7, jointName = "Torso_LeftLeg")
-            pyrosim.Send_Motor_Neuron(name = 8, jointName = "Torso_RightLeg")
-            pyrosim.Send_Motor_Neuron(name = 9, jointName = "FrontLeg_FrontLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 10, jointName = "BackLeg_BackLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 11, jointName = "LeftLeg_LeftLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 12, jointName = "RightLeg_RightLowerLeg")
-        else:
-            # sensor neurons for 4 corner legs
-            pyrosim.Send_Sensor_Neuron(name = 5, linkName = "FrontRightLowerLeg")
-            pyrosim.Send_Sensor_Neuron(name = 6, linkName = "FrontLeftLowerLeg")
-            pyrosim.Send_Sensor_Neuron(name = 7, linkName = "BackRightLowerLeg")
-            pyrosim.Send_Sensor_Neuron(name = 8, linkName = "BackLeftLowerLeg")
-
-            pyrosim.Send_Motor_Neuron(name = 9, jointName = "Torso_BackLeg")
-            pyrosim.Send_Motor_Neuron(name = 10, jointName = "Torso_FrontLeg")
-            pyrosim.Send_Motor_Neuron(name = 11, jointName = "Torso_LeftLeg")
-            pyrosim.Send_Motor_Neuron(name = 12, jointName = "Torso_RightLeg")
-            pyrosim.Send_Motor_Neuron(name = 13, jointName = "FrontLeg_FrontLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 14, jointName = "BackLeg_BackLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 15, jointName = "LeftLeg_LeftLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 16, jointName = "RightLeg_RightLowerLeg")
-
-            # motor neurons for corner legs
-            pyrosim.Send_Motor_Neuron(name = 17, jointName = "Torso_FrontRightLeg")
-            pyrosim.Send_Motor_Neuron(name = 18, jointName = "Torso_FrontLeftLeg")
-            pyrosim.Send_Motor_Neuron(name = 19, jointName = "Torso_BackRightLeg")
-            pyrosim.Send_Motor_Neuron(name = 20, jointName = "Torso_BackLeftLeg")
-            pyrosim.Send_Motor_Neuron(name = 21, jointName = "FrontRightLeg_FrontRightLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 22, jointName = "FrontLeftLeg_FrontLeftLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 23, jointName = "BackRightLeg_BackRightLowerLeg")
-            pyrosim.Send_Motor_Neuron(name = 24, jointName = "BackLeftLeg_BackLeftLowerLeg")
-    
+        # create synapses from every sensor to every neuron    
         for currentRow in range(c.numSensorNeurons):
             for currentCol in range(c.numMotorNeurons):
-                pyrosim.Send_Synapse(sourceNeuronName = currentRow, 
-                                     targetNeuronName = currentCol + c.numSensorNeurons, 
-                                     weight = self.weights[currentRow][currentCol])
+                pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentCol + c.numSensorNeurons, weight = self.weights[currentRow][currentCol])
     
         pyrosim.End()
 
@@ -121,7 +85,7 @@ def Create_Body():
     pyrosim.Send_Cube(name="RightLowerLeg", pos=[0, 0, -0.5], size=[0.2,0.2,1])
 
     # if its 8 legged
-    if c.numSensorNeurons == 9:
+    if c.numLegs == 8:
         # 4 legs that start from corner of torso
         d = 0.5 / np.sqrt(2)
         pyrosim.Send_Joint(name="Torso_FrontRightLeg", parent="Torso", child="FrontRightLeg", type="revolute", position=[0.5,0.5,1], jointAxis="-1 1 0")
