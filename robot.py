@@ -49,8 +49,10 @@ class ROBOT:
 
     # calculate fitness value and write to a file
     def Get_Fitness(self, id):
-        fitness = self.__jumpingFitness(c.numLegs) # jumping with either 4 or 8 legs
-        # fitness = self.__distanceFitness(0) * -1              # distance fitness
+        if c.fitness == "jumping":
+            fitness = self.__jumpingFitness(c.numLegs) # jumping with either 4 or 8 legs
+        else:
+            fitness = self.__distanceFitness(0) * -1
         f = open(f"tmp{id}.txt", "w")
         f.write(str(fitness))
         f.close()

@@ -9,13 +9,18 @@ populationSize = 10
 
 numLegs = 4
 legNames = ['Front', 'Back', 'Right', 'Left']
-
 # numLegs = 8
 # legNames = ['Front', 'Back', 'Right', 'Left', 'FrontRight', 'FrontLeft', 'BackRight', 'BackLeft']
 
+fitness = "jumping"
+# fitness = "distance"
+
+oscillatory = True
+# oscillatory = False
+
 numSensorNeurons = numLegs + 1
 numMotorNeurons = numLegs * 2
-numHiddenNeurons = 2
+numHiddenNeurons = 12
 
 motorJointRange = 0.2
 x = 22.2
