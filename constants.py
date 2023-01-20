@@ -15,6 +15,7 @@ legNames = ['Front', 'Back', 'Right', 'Left']
 
 numSensorNeurons = numLegs + 1
 numMotorNeurons = numLegs * 2
+numHiddenNeurons = 2
 
 motorJointRange = 0.2
 x = 22.2

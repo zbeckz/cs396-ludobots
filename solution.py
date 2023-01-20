@@ -9,7 +9,9 @@ class SOLUTION:
 
     def __init__(self, id):
         self.myID = id
-        self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
+        # self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
+        self.sensorToHiddenWeights = np.random.rand(c.numSensorNeurons, c.numHiddenNeurons) * 2 - 1
+        self.hiddenToMotorWeights = np.random.rand(c.numHiddenNeurons, c.numMotorNeurons) * 2 - 1
 
     def Set_ID(self, id):
         self.myID = id
@@ -33,7 +35,10 @@ class SOLUTION:
 
     # pick a random weight and change it to a random value
     def Mutate(self):
-        self.weights[random.randint(0, c.numSensorNeurons-1)][random.randint(0, c.numMotorNeurons-1)] = random.random()*2 - 1
+        if random.randint(0, 1) < 0.5:
+            self.sensorToHiddenWeights[random.randint(0, c.numSensorNeurons-1)][random.randint(0, c.numHiddenNeurons-1)] = random.random()*2 - 1
+        else:
+            self.hiddenToMotorWeights[random.randint(0, c.numHiddenNeurons-1)][random.randint(0, c.numMotorNeurons-1)] = random.random()*2 - 1
 
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
@@ -41,24 +46,41 @@ class SOLUTION:
         # torso sensor
         pyrosim.Send_Sensor_Neuron(name = 0, linkName = "Torso")
 
-        # create neurons
+        counter = 1
+        # create sensor neurons
         for i in range(c.numLegs):
             name = c.legNames[i]
-            pyrosim.Send_Sensor_Neuron(name = i + 1, linkName = f"{name}LowerLeg") # sensor neurons
-            pyrosim.Send_Motor_Neuron(name = i + c.numSensorNeurons, jointName = f"Torso_{name}Leg") # torso to leg joints
-            pyrosim.Send_Motor_Neuron(name = i + c.numMotorNeurons, jointName = f"{name}Leg_{name}LowerLeg")
+            pyrosim.Send_Sensor_Neuron(name = counter, linkName = f"{c.legNames[i]}LowerLeg")
+            counter += 1
 
-        # create synapses from every sensor to every neuron    
+        # create hidden neurons
+        for i in range(c.numHiddenNeurons):
+            pyrosim.Send_Hidden_Neuron(name = counter)
+            counter += 1
+            
+        # create motor neurons
+        for i in range(c.numLegs):
+            pyrosim.Send_Motor_Neuron(name = counter, jointName = f"Torso_{c.legNames[i]}Leg") # torso to leg joints
+            counter += 1
+            pyrosim.Send_Motor_Neuron(name = counter, jointName = f"{c.legNames[i]}Leg_{c.legNames[i]}LowerLeg") # leg to lower leg joints
+            counter += 1
+
+        # create synapses from every sensor to every hidden neuron
         for currentRow in range(c.numSensorNeurons):
+            for currentCol in range(c.numHiddenNeurons):
+                pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentCol + c.numSensorNeurons, weight = self.sensorToHiddenWeights[currentRow][currentCol])
+    
+        # create synapses from every hidden neuron to every motor neuron
+        for currentRow in range(c.numHiddenNeurons):
             for currentCol in range(c.numMotorNeurons):
-                pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentCol + c.numSensorNeurons, weight = self.weights[currentRow][currentCol])
+                pyrosim.Send_Synapse(sourceNeuronName = currentRow + c.numSensorNeurons, targetNeuronName = currentCol + c.numSensorNeurons + c.numHiddenNeurons, weight = self.hiddenToMotorWeights[currentRow][currentCol])
     
         pyrosim.End()
 
 def Create_World():
     pyrosim.Start_SDF("world.sdf")
     pyrosim.Send_Cube(name="Box", pos=[-5, 5, 0.5] , size=[1,1,1])
-    pyrosim.End()   
+    pyrosim.End()
 
 def Create_Body():
     pyrosim.Start_URDF("body.urdf")
