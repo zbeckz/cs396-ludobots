@@ -6,7 +6,7 @@ gravity = -9.8
 maxForce = 100
 iterations = 1000
 
-kickBallStartingPosition = [-3.0, 0.0, 0.5]
+kickBallStartingPosition = [-2.5, 0.0, 0.5]
 
 numberOfGenerations = 10
 populationSize = 10
