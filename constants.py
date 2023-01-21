@@ -22,5 +22,5 @@ numSensorNeurons = numLegs + 1
 numMotorNeurons = numLegs * 2
 numHiddenNeurons = 12
 
-motorJointRange = 0.2
+motorJointRange = 0.22
 x = 22.2
