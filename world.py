@@ -3,5 +3,8 @@ import pybullet as p
 class WORLD:
 
     def __init__(self):
-        p.loadSDF("world.sdf")
+        self.objects = p.loadSDF("world.sdf")
         self.planeId = p.loadURDF("plane.urdf")
+
+    def getPosAndOrientation(self, index):
+        return p.getBasePositionAndOrientation(self.objects[index])

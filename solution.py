@@ -9,9 +9,11 @@ class SOLUTION:
 
     def __init__(self, id):
         self.myID = id
-        # self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
-        self.sensorToHiddenWeights = np.random.rand(c.numSensorNeurons, c.numHiddenNeurons) * 2 - 1
-        self.hiddenToMotorWeights = np.random.rand(c.numHiddenNeurons, c.numMotorNeurons) * 2 - 1
+        if c.numHiddenNeurons == 0:
+            self.weights = np.random.rand(c.numSensorNeurons, c.numMotorNeurons) * 2 - 1
+        else:
+            self.sensorToHiddenWeights = np.random.rand(c.numSensorNeurons, c.numHiddenNeurons) * 2 - 1
+            self.hiddenToMotorWeights = np.random.rand(c.numHiddenNeurons, c.numMotorNeurons) * 2 - 1
 
     def Set_ID(self, id):
         self.myID = id
@@ -19,11 +21,11 @@ class SOLUTION:
     # create the brain, simulate in background
     def Start_Simulation(self, directOrGUI):
         self.Create_Brain()
-        os.system(f"start /B python simulate.py {directOrGUI} {self.myID} >nul 2>&1")
-
-        # This is here because the above system call supressed error messages
-        # os.system(f"start /B python simulate.py {directOrGUI} {self.myID}") 
-
+        if c.showErrors:
+            os.system(f"start /B python simulate.py {directOrGUI} {self.myID}") 
+        else:
+            os.system(f"start /B python simulate.py {directOrGUI} {self.myID} >nul 2>&1")
+        
     # once the simulation is over, read in the fitness and delete that file
     def Wait_For_Simulation_To_End(self):
         while not os.path.exists(f"fitness{self.myID}.txt"):
@@ -35,10 +37,13 @@ class SOLUTION:
 
     # pick a random weight and change it to a random value
     def Mutate(self):
-        if random.randint(0, 1) < 0.5:
-            self.sensorToHiddenWeights[random.randint(0, c.numSensorNeurons-1)][random.randint(0, c.numHiddenNeurons-1)] = random.random()*2 - 1
+        if c.numHiddenNeurons == 0:
+            self.weights[random.randint(0, c.numSensorNeurons-1)][random.randint(0, c.numMotorNeurons-1)] = random.random()*2 - 1
         else:
-            self.hiddenToMotorWeights[random.randint(0, c.numHiddenNeurons-1)][random.randint(0, c.numMotorNeurons-1)] = random.random()*2 - 1
+            if random.randint(0, 1) < 0.5:
+                self.sensorToHiddenWeights[random.randint(0, c.numSensorNeurons-1)][random.randint(0, c.numHiddenNeurons-1)] = random.random()*2 - 1
+            else:
+                self.hiddenToMotorWeights[random.randint(0, c.numHiddenNeurons-1)][random.randint(0, c.numMotorNeurons-1)] = random.random()*2 - 1
 
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
@@ -65,21 +70,26 @@ class SOLUTION:
             pyrosim.Send_Motor_Neuron(name = counter, jointName = f"{c.legNames[i]}Leg_{c.legNames[i]}LowerLeg") # leg to lower leg joints
             counter += 1
 
-        # create synapses from every sensor to every hidden neuron
-        for currentRow in range(c.numSensorNeurons):
-            for currentCol in range(c.numHiddenNeurons):
-                pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentCol + c.numSensorNeurons, weight = self.sensorToHiddenWeights[currentRow][currentCol])
-    
-        # create synapses from every hidden neuron to every motor neuron
-        for currentRow in range(c.numHiddenNeurons):
-            for currentCol in range(c.numMotorNeurons):
-                pyrosim.Send_Synapse(sourceNeuronName = currentRow + c.numSensorNeurons, targetNeuronName = currentCol + c.numSensorNeurons + c.numHiddenNeurons, weight = self.hiddenToMotorWeights[currentRow][currentCol])
-    
+        if c.numHiddenNeurons == 0:
+            for currentRow in range(c.numSensorNeurons):
+                for currentCol in range(c.numMotorNeurons):
+                    pyrosim.Send_Synapse(sourceNeuronName=currentRow, targetNeuronName=currentCol + c.numSensorNeurons, weight=self.weights[currentRow][currentCol])
+        else:
+            # create synapses from every sensor to every hidden neuron
+            for currentRow in range(c.numSensorNeurons):
+                for currentCol in range(c.numHiddenNeurons):
+                    pyrosim.Send_Synapse(sourceNeuronName = currentRow, targetNeuronName = currentCol + c.numSensorNeurons, weight = self.sensorToHiddenWeights[currentRow][currentCol])
+        
+            # create synapses from every hidden neuron to every motor neuron
+            for currentRow in range(c.numHiddenNeurons):
+                for currentCol in range(c.numMotorNeurons):
+                    pyrosim.Send_Synapse(sourceNeuronName = currentRow + c.numSensorNeurons, targetNeuronName = currentCol + c.numSensorNeurons + c.numHiddenNeurons, weight = self.hiddenToMotorWeights[currentRow][currentCol])
+        
         pyrosim.End()
 
 def Create_World():
     pyrosim.Start_SDF("world.sdf")
-    pyrosim.Send_Sphere(name="BowlingBall" , pos=[-4,0,0.5] , size=[0.5])
+    pyrosim.Send_Sphere(name="KickBall", pos=c.kickBallStartingPosition , size=[0.5])
     pyrosim.End()
 
 def Create_Body():

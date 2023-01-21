@@ -48,15 +48,27 @@ class ROBOT:
         self.nn.Update()
 
     # calculate fitness value and write to a file
-    def Get_Fitness(self, id):
+    def Get_Fitness(self, id, ballPos):
         if c.fitness == "jumping":
             fitness = self.__jumpingFitness(c.numLegs) # jumping with either 4 or 8 legs
-        else:
+        elif c.fitness == "distance":
             fitness = self.__distanceFitness(0) * -1
+        else:
+            fitness = self.__kickBallFitness(ballPos)
         f = open(f"tmp{id}.txt", "w")
         f.write(str(fitness))
         f.close()
         os.rename(f"tmp{id}.txt", f"fitness{id}.txt")
+
+    # the sphere should end up as far away from its starting position as possible, param 0 means x, 1 means 1, 2 means z
+    def __kickBallFitness(self, ballPosTuple):
+        ballPos = [ballPosTuple[0], ballPosTuple[1], ballPosTuple[2]]
+        ballPosDist = np.sqrt((c.kickBallStartingPosition[0] - ballPos[0])**2 + (c.kickBallStartingPosition[1] - ballPos[1])**2 + (c.kickBallStartingPosition[2] - ballPos[2])**2)
+        robotPos = p.getBasePositionAndOrientation(self.robotId)[0]
+        fit = np.sqrt((robotPos[0] - ballPos[0])**2 + (robotPos[1] - ballPos[1])**2 + (robotPos[2] - ballPos[2])**2) 
+        if ballPosDist < 0.05:
+            fit = fit * -1 # if it hasn't moved the ball, then fitness distance should be negative so that closer to the ball is better
+        return fit # otherwise, the further the ball the better, so return the distance from the robot to the ball
 
     # param 0 means x, 1 means y, 2 means z
     def __distanceFitness(self, param):

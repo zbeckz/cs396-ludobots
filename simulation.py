@@ -30,7 +30,7 @@ class SIMULATION:
                 time.sleep(1/60)
 
     def Get_Fitness(self, id):
-        self.robot.Get_Fitness(id)
+        self.robot.Get_Fitness(id, self.world.getPosAndOrientation(0)[0])
 
     def __del__(self):
         p.disconnect()
