@@ -22,7 +22,7 @@ oscillatory = False # can be True or False
 
 numSensorNeurons = numLegs + 1
 numMotorNeurons = numLegs * 2
-numHiddenNeurons = 0
+numHiddenNeurons = 12
 
 motorJointRange = 0.22
 x = 22.2
