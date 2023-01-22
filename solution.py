@@ -89,8 +89,11 @@ class SOLUTION:
 
 def Create_World():
     pyrosim.Start_SDF("world.sdf")
-    pyrosim.Send_Sphere(name="KickBall", pos=c.kickBallStartingPosition , size=[0.5])
-    pyrosim.Send_Sphere(name="targetBall", pos=c.targetBallStartingPosition , size=[0.5])
+    if c.fitness == "kickBall":
+        pyrosim.Send_Sphere(name="KickBall", pos=c.kickBallStartingPosition , size=[0.5])
+    if c.fitness == "target":
+        pyrosim.Send_Sphere(name="KickBall", pos=c.kickBallStartingPosition , size=[0.5])
+        pyrosim.Send_Sphere(name="targetBall", pos=c.targetBallStartingPosition , size=[0.5])
     pyrosim.End()
 
 def Create_Body():
