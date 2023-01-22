@@ -21,14 +21,14 @@ class PARALLEL_HILL_CLIMBER:
     def Evolve(self):
         self.Evaluate(self.parents)
         for currentGeneration in range(c.numberOfGenerations):
-           self.Evolve_For_One_Generation()
+           self.Evolve_For_One_Generation(currentGeneration)
 
     # pretty self explanatory - check the called methods' descriptions
-    def Evolve_For_One_Generation(self):
+    def Evolve_For_One_Generation(self, gen):
         self.Spawn()
         self.Mutate()
         self.Evaluate(self.children)
-        self.Print()
+        self.Print(gen)
         self.Select()
 
     # simulate all given solutions in parallel, gathering fitness data internally
@@ -65,7 +65,8 @@ class PARALLEL_HILL_CLIMBER:
                 best = parent
         best.Start_Simulation("GUI")
 
-    def Print(self):
+    def Print(self, gen):
+        print(f'\n---------------GEN {gen+1}---------------')
         for key in self.parents.keys():
-            print(f'\nParent: {self.parents[key].fitness}, Child: {self.children[key].fitness}')
-        print('\n------------------------------------')
+            print("Parent: {:.2f}, Child: {:.2f}".format(self.parents[key].fitness, self.children[key].fitness))
+        print('------------------------------------')

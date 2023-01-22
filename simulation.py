@@ -19,6 +19,8 @@ class SIMULATION:
         p.setGravity(0,0,c.gravity)
         self.world = WORLD()
         self.robot = ROBOT(solID)
+        self.kickBallPos = [0] * c.iterations
+        self.targetBallPos = [0] * c.iterations
 
     def Run(self):
         for i in range(c.iterations): 
@@ -26,11 +28,19 @@ class SIMULATION:
             self.robot.Sense(i)
             self.robot.Think()
             self.robot.Act(i)
-            if self.directOrGUI == "GUI":       
+            self.kickBallPos[i] = self.world.getPosAndOrientation(0)[0]
+            self.targetBallPos[i] = self.world.getPosAndOrientation(0)[1]
+            if self.directOrGUI == "GUI":
                 time.sleep(1/60)
 
     def Get_Fitness(self, id):
-        self.robot.Get_Fitness(id, self.world.getPosAndOrientation(0)[0])
+        if c.fitness == "kickBall":
+            self.robot.Get_Fitness(id, self.world.getPosAndOrientation(0)[0])
+        elif c.fitness == "target":
+            self.robot.Get_Fitness(id=id, ballPos=self.kickBallPos, targetPos=self.targetBallPos)
+        else:
+            self.robot.Get_Fitness(id)
+        
 
     def __del__(self):
         p.disconnect()
