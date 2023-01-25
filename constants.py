@@ -9,7 +9,7 @@ iterations = 1000
 kickBallStartingPosition = [-2.5, 0.0, 0.5]
 targetBallStartingPosition = [-5.0, 0.0, 0.5]
 
-numberOfGenerations = 10
+numberOfGenerations = 20
 populationSize = 10
 
 numLegs = 4
