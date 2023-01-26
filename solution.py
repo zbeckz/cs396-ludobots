@@ -55,5 +55,29 @@ def Create_World():
 
 def Create_Body():
     pyrosim.Start_URDF("body.urdf")
+    
+    # create a random number of links from 1 to 10
+    numlinks = random.randint(2, 10)
+
+    # first link is the root, with absolute position
+    # each has a random size (in x and y direction, between 0.5 and 2.5, determined by radii)
+    xpos = 0
+    ypos = 0
+    xrad = random.random() + 0.25 # between 0.25 and 1.25
+    yrad = random.random() + 0.25
+    pyrosim.Send_Cube(name="Link0", pos=[xpos, ypos, 0.5], size=[xrad*2, yrad*2, 1])
+    pyrosim.Send_Joint(name="Link0_Link1", parent="Link0", child="Link1", type="revolute", position=[0, yrad, 0.5], jointAxis="1 0 0")
+
+    # loop through to create the remainder of the links
+    for i in range(1, numlinks):
+        if i != 1:
+            # add a joint from previous link to this next link. Position relative to previous joint
+            pyrosim.Send_Joint(name=f"Link{i-1}_Link{i}", parent=f"Link{i-1}", child=f"Link{i}", type="revolute", position=[0, yrad*2, 0], jointAxis="1 0 0")
+
+        # add a link 
+        xrad = random.random() + 0.25 # between 0.25 and 1.25
+        yrad = random.random() + 0.25
+        pyrosim.Send_Cube(name=f"Link{i}", pos=[0, yrad, 0], size=[xrad*2, yrad*2, 1])
+
     pyrosim.End()
     
