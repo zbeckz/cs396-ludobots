@@ -60,9 +60,10 @@ class PARALLEL_HILL_CLIMBER:
     # find the best parent, simulate it with the GUI
     def Show_Best(self):
         best = self.parents[0]
-        for parent in self.parents.values():
-            if parent.fitness > best.fitness:
-                best = parent
+        if len(self.parents) != 1:
+            for parent in self.parents.values():
+                if parent.fitness > best.fitness:
+                    best = parent
         best.Start_Simulation("GUI")
 
     def Print(self, gen):
