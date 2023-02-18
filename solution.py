@@ -114,7 +114,14 @@ class SOLUTION:
             return
 
         # first make a joint from the previous link to the new one you are about to create
-        pyrosim.Send_Joint(name=f"Link{prevLinkNumber}_Link{self.currentLinkNumber}", parent=f"Link{prevLinkNumber}", child=f"Link{self.currentLinkNumber}", type="revolute", position=jointPos, jointAxis="1 0 0")
+        num = random.random()
+        if num < 1/3:
+            axis = "0 0 1"
+        elif num < 2/3:
+            axis = "0 1 0"
+        else:
+            axis = "1 0 0"
+        pyrosim.Send_Joint(name=f"Link{prevLinkNumber}_Link{self.currentLinkNumber}", parent=f"Link{prevLinkNumber}", child=f"Link{self.currentLinkNumber}", type="revolute", position=jointPos, jointAxis=axis)
         if random.random() < self.pMotor:
             self.motors.append((prevLinkNumber, self.currentLinkNumber))
 
@@ -146,7 +153,8 @@ class SOLUTION:
 
     # returns an array of random radii between 0.125 and 0.625 like [x, y, z] so that the length of each side is between 0.25 and 1.25
     def Get_Radii(self):
-        return np.array([0.125, 0.125, 0.125])
+        return np.random.rand(3) * 0.2 + 0.05
+        #return np.array([0.125, 0.125, 0.125])
 
 
 
