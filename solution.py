@@ -101,13 +101,16 @@ class SOLUTION:
         self.currentLinkNumber += 1
 
         # utilize recursive function to make the rest of the body
-        self.Make_Limb(self.currentLinkNumber-1, [0, 0, 0.125 + radii[2]], [0, 0, 1])
+        self.Make_Limb(self.currentLinkNumber-1, [0, 0, 0.125 + radii[2]], [0, 0, 1], 0.125 + radii[2])
         
         pyrosim.End()
 
     # takes [x, y, z] as jointPos and [0, 0, 0] but replace one 0 with +/- 1 for direction
-    def Make_Limb(self, prevLinkNumber, jointPos, direction):
+    def Make_Limb(self, prevLinkNumber, jointPos, direction, globalZ):
         if self.currentLinkNumber > self.maxLinks - 1: # to stop the recursion
+            return
+
+        if globalZ < 0.125: # under the ground
             return
 
         # first make a joint from the previous link to the new one you are about to create
@@ -127,17 +130,18 @@ class SOLUTION:
         self.currentLinkNumber += 1
 
         # use recursion to make more limbs
-        self.Random_Limb(direction, myLinkNumber, radii, self.directionToProbability[tuple(direction)]) # right
+        self.Random_Limb(direction, myLinkNumber, radii, self.directionToProbability[tuple(direction)], globalZ) # right
         
 
     # given probabilities [right, left, up, down, forward, back], create random limbs
-    def Random_Limb(self, direction, linkNum, radii, probabilities):
+    def Random_Limb(self, direction, linkNum, radii, probabilities, globalZ):
 
         # loop through all the possible directions to create a link, if the random number says make it, do it using fun math
         i = 0
-        for key in self.directionToProbability.keys(): 
+        for key in self.directionToProbability.keys():
             if (random.random() < probabilities[i]):
-                self.Make_Limb(linkNum, np.multiply(np.add(direction, list(key)), radii), list(key))
+                jointPos = np.multiply(np.add(direction, list(key)), radii)
+                self.Make_Limb(linkNum, jointPos, list(key), globalZ + jointPos[2])
             i += 1
 
     # returns an array of random radii between 0.125 and 0.625 like [x, y, z] so that the length of each side is between 0.25 and 1.25
