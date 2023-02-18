@@ -14,7 +14,7 @@ class SOLUTION:
         self.pExtend = 0.9
         self.pTurn = 0.1
         self.pSensor = 0.5 # odds a link contains a sensor
-        self.pMotor = (0.5, 0.5, 0.5) # odds a joint contains a motor in the x, y, and z direction respectively
+        self.pMotor = 0.5 # odds a joint has a motor
         self.sensors = [] # contains numbers that represent which links will have sensors
         self.motors = [] # contains tuples (l1, l2, axis) that represent a joint between links l1 and l2 around axis
         self.directionToProbability = {
@@ -112,7 +112,8 @@ class SOLUTION:
 
         # first make a joint from the previous link to the new one you are about to create
         pyrosim.Send_Joint(name=f"Link{prevLinkNumber}_Link{self.currentLinkNumber}", parent=f"Link{prevLinkNumber}", child=f"Link{self.currentLinkNumber}", type="revolute", position=jointPos, jointAxis="1 0 0")
-        self.motors.append((prevLinkNumber, self.currentLinkNumber))
+        if random.random() < self.pMotor:
+            self.motors.append((prevLinkNumber, self.currentLinkNumber))
 
         # make a new limb by getting a size, calculating the position it should be relative to previous
         radii = self.Get_Radii()
