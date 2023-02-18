@@ -9,11 +9,22 @@ class SOLUTION:
 
     def __init__(self, id):
         self.myID = id
-        self.numlinks = random.randint(2, 10)
-        self.sensorValues = np.random.randint(2, size=self.numlinks) # random array of 0s and 1s. 1 means sensor, 0 means no sensor
-        self.numSensors = np.sum(self.sensorValues)
-        self.numMotors = self.numlinks - 1
-        self.weights = np.random.rand(self.numSensors, self.numMotors) * 2 - 1 # matrix of vals between -1 and 1. Row i, col j is synapse weight between sensor i and motor j
+        self.currentLinkNumber = 0
+        self.maxLinks = 50
+        self.pExtend = 0.9
+        self.pTurn = 0.1
+        self.pSensor = 0.5 # odds a link contains a sensor
+        self.pMotor = (0.5, 0.5, 0.5) # odds a joint contains a motor in the x, y, and z direction respectively
+        self.sensors = [] # contains numbers that represent which links will have sensors
+        self.motors = [] # contains tuples (l1, l2, axis) that represent a joint between links l1 and l2 around axis
+        self.directionToProbability = {
+            tuple([1, 0, 0]): (self.pExtend, 0, self.pTurn, self.pTurn, self.pTurn, self.pTurn),
+            tuple([-1, 0, 0]): (0, self.pExtend, self.pTurn, self.pTurn, self.pTurn, self.pTurn),
+            tuple([0, 1, 0]): (self.pTurn, self.pTurn, self.pExtend, 0, self.pTurn, self.pTurn),
+            tuple([0, -1, 0]): (self.pTurn, self.pTurn, 0, self.pExtend, self.pTurn, self.pTurn),
+            tuple([0, 0, 1]): (self.pTurn, self.pTurn, self.pTurn, self.pTurn, self.pExtend, 0),
+            tuple([0, 0, -1]): (self.pTurn, self.pTurn, self.pTurn, self.pTurn, 0, self.pExtend)
+        }
         self.Create_World()
         self.Create_Body()
         self.Create_Brain()
@@ -51,21 +62,25 @@ class SOLUTION:
     def Create_Brain(self):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
 
+        # create weights between neurons depending on how many there are
+        self.weights = np.random.random((len(self.sensors), len(self.motors))) * 2 - 1
+
         # create sensor neurons
-        sensorCounter = 0
-        for i in range(self.numlinks):
-            if self.sensorValues[i] == 1:
-                pyrosim.Send_Sensor_Neuron(name=f"Sensor{sensorCounter}", linkName=f"Link{i}")
-                sensorCounter += 1
+        for i in self.sensors:
+            pyrosim.Send_Sensor_Neuron(name=f"Sensor{i}", linkName=f"Link{i}")
         
         # create motor neurons
-        for i in range(self.numMotors):
-            pyrosim.Send_Motor_Neuron(name=f"Motor{i}", jointName=f"Link{i}_Link{i+1}")
+        for tup in self.motors:
+            pyrosim.Send_Motor_Neuron(name=f"Motor{tup[0]}_{tup[1]}", jointName=f"Link{tup[0]}_Link{tup[1]}")
 
         # create synpases
-        for i in range(self.numSensors):
-            for j in range(self.numMotors):
-                pyrosim.Send_Synapse(f"Sensor{i}", f"Motor{j}", self.weights[i][j])
+        i = 0
+        for s in self.sensors:
+            j = 0
+            for tup in self.motors:
+                pyrosim.Send_Synapse(f"Sensor{s}", f"Motor{tup[0]}_{tup[1]}", self.weights[i][j])
+                j += 1
+            i += 1
 
         pyrosim.End()
 
@@ -73,37 +88,65 @@ class SOLUTION:
         pyrosim.Start_SDF("world.sdf")
         pyrosim.End()
 
-    def Create_Body(self):
+    def Create_Body(self):  
         pyrosim.Start_URDF("body.urdf")
 
         # first link is the root, with absolute position
-        xpos = 0
-        ypos = 0
-        xrad = random.random() * 0.5 + 0.125          # x radius between 0.125 and 0.625
-        yrad = random.random() * 0.5 + 0.125          # y radius between 0.125 and 0.625
-        zrad = random.random() * 0.5 + 0.125          # z radius between 0.125 and 0.625
-        if self.sensorValues[0] == 0:
-            pyrosim.Send_Cube(name="Link0", pos=[xpos, ypos, 0.625], size=[xrad*2, yrad*2, zrad*2], color="Cyan") # no sensor
-        else:
-            pyrosim.Send_Cube(name="Link0", pos=[xpos, ypos, 0.625], size=[xrad*2, yrad*2, zrad*2], color="Green") # yes sensor
-        pyrosim.Send_Joint(name="Link0_Link1", parent="Link0", child="Link1", type="revolute", position=[0, yrad, 0.625], jointAxis="1 0 0")
+        radii = self.Get_Radii()
+        color = "Cyan"
+        if random.random() < self.pSensor:
+            color = "Green"
+            self.sensors.append(self.currentLinkNumber)
+        pyrosim.Send_Cube(name=f"Link{self.currentLinkNumber}", pos=[0, 0, 0.125], size=2*radii, color=color)
+        self.currentLinkNumber += 1
 
-        # loop through to create the remainder of the links
-        for i in range(1, self.numlinks):
-            if i != 1:
-                # add a joint from previous link to this next link. Position relative to previous joint
-                pyrosim.Send_Joint(name=f"Link{i-1}_Link{i}", parent=f"Link{i-1}", child=f"Link{i}", type="revolute", position=[0, yrad*2, 0], jointAxis="1 0 0")
-
-            # add a link 
-            xrad = random.random() * 0.5 + 0.125          # x radius between 0.125 and 0.625
-            yrad = random.random() * 0.5 + 0.125          # y radius between 0.125 and 0.625
-            zrad = random.random() * 0.5 + 0.125          # z radius between 0.125 and 0.625
-            if self.sensorValues[i] == 0:
-                pyrosim.Send_Cube(name=f"Link{i}", pos=[0, yrad, 0], size=[xrad*2, yrad*2, zrad*2], color="Cyan") # no sensor
-            else:
-                pyrosim.Send_Cube(name=f"Link{i}", pos=[0, yrad, 0], size=[xrad*2, yrad*2, zrad*2], color="Green") # yes sensor
-
+        # utilize recursive function to make the rest of the body
+        self.Make_Limb(self.currentLinkNumber-1, [0, 0, 0.125 + radii[2]], [0, 0, 1])
+        
         pyrosim.End()
+
+    # takes [x, y, z] as jointPos and [0, 0, 0] but replace one 0 with +/- 1 for direction
+    def Make_Limb(self, prevLinkNumber, jointPos, direction):
+        if self.currentLinkNumber > self.maxLinks - 1: # to stop the recursion
+            return
+
+        # first make a joint from the previous link to the new one you are about to create
+        pyrosim.Send_Joint(name=f"Link{prevLinkNumber}_Link{self.currentLinkNumber}", parent=f"Link{prevLinkNumber}", child=f"Link{self.currentLinkNumber}", type="revolute", position=jointPos, jointAxis="1 0 0")
+        self.motors.append((prevLinkNumber, self.currentLinkNumber))
+
+        # make a new limb by getting a size, calculating the position it should be relative to previous
+        radii = self.Get_Radii()
+        linkPos = np.multiply(direction, radii)
+        color = "Cyan"
+        if random.random() < self.pSensor:
+            color = "Green"
+            self.sensors.append(self.currentLinkNumber)
+        pyrosim.Send_Cube(name=f"Link{self.currentLinkNumber}", pos=linkPos, size=2*radii, color=color)
+        myLinkNumber = self.currentLinkNumber
+        self.currentLinkNumber += 1
+
+        # use recursion to make more limbs
+        self.Random_Limb(direction, myLinkNumber, radii, self.directionToProbability[tuple(direction)]) # right
+        
+
+    # given probabilities [right, left, up, down, forward, back], create random limbs
+    def Random_Limb(self, direction, linkNum, radii, probabilities):
+
+        # loop through all the possible directions to create a link, if the random number says make it, do it using fun math
+        i = 0
+        for key in self.directionToProbability.keys(): 
+            if (random.random() < probabilities[i]):
+                self.Make_Limb(linkNum, np.multiply(np.add(direction, list(key)), radii), list(key))
+            i += 1
+
+    # returns an array of random radii between 0.125 and 0.625 like [x, y, z] so that the length of each side is between 0.25 and 1.25
+    def Get_Radii(self):
+        return np.array([0.125, 0.125, 0.125])
+
+
+
+
+    
 
 
     

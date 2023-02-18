@@ -4,7 +4,7 @@ showErrors = False
 
 gravity = -9.8
 maxForce = 100
-iterations = 222
+iterations = 500
 
 kickBallStartingPosition = [-2.5, 0.0, 0.5]
 targetBallStartingPosition = [-5.0, 0.0, 0.5]
