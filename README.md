@@ -9,5 +9,7 @@ Run python search.py to randomly create and simulate a body and brain. Run it mu
 
 BODY DESCRIPTION:
 In the following description, refer to this diagram for cube numbers
-![alt text](https://imgur.com/a/70W5W4A)
+https://imgur.com/a/70W5W4A
+
+Imagine link 3 was just placed
 
