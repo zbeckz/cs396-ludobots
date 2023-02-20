@@ -2,15 +2,17 @@
 This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet
 
 VIDEO: 
+
 https://youtu.be/lAxipjH3Vbc
 
 INSTRUCTIONS: 
+
 Run python search.py to randomly create and simulate a body and brain. Run it mulitple times to see the variety in possible creatures
 
 BODY DESCRIPTION:
-In the following description, refer to this diagram for cube numbers
 
-![image text](https://imgur.com/a/70W5W4A)
+In the following description, refer to this diagram for cube numbers
+https://imgur.com/a/70W5W4A
 
 Links are created using a custom made function. This function takes in a position for the joint that will connect this new link to previous link, as well as a direction that the new link is being placed in. Imagine we create link 3 using this function - it will be given a position for a joint that is placed in the middle of the right face of link 2, and told the direction is to the right. 
 
