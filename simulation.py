@@ -33,13 +33,7 @@ class SIMULATION:
                 time.sleep(1/60)
 
     def Get_Fitness(self, id):
-        if c.fitness == "kickBall":
-            self.robot.Get_Fitness(id, self.world.getPosAndOrientation(0)[0])
-        elif c.fitness == "target":
-            self.robot.Get_Fitness(id=id, ballPos=self.kickBallPos, targetPos=self.targetBallPos)
-        else:
-            self.robot.Get_Fitness(id)
+        self.robot.Get_Fitness(id)
         
-
     def __del__(self):
         p.disconnect()

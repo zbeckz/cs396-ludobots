@@ -57,14 +57,14 @@ class SOLUTION:
             
         self.Create_World()
         self.Create_Body()
-        self.Create_Brain()
+        self.Create_Brain(True)
 
     def Set_ID(self, id):
         self.myID = id
     
     # create the brain, simulate in background
     def Start_Simulation(self, directOrGUI):
-        self.Create_Brain()
+        self.Create_Brain(False)
         if c.showErrors:
             os.system(f"start /B python simulate.py {directOrGUI} {self.myID}") 
         else:
@@ -81,9 +81,16 @@ class SOLUTION:
 
     # pick a random weight and change it to a random value
     def Mutate(self):
+        self.Mutate_Body()
+        self.Mutate_Brain()
+
+    def Mutate_Body(self):
         pass
 
-    def Create_Brain(self):
+    def Mutate_Brain(self):
+        pass
+
+    def Create_Brain(self, first):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
 
         # create a sensor neuron in each foot
@@ -105,8 +112,11 @@ class SOLUTION:
             if multiplier != 0: start -= bodyAndTorsoJoints
             if multiplier == self.torsoSpecs["num"] - 1: end -= bodyAndTorsoJoints
             for j in range(start, end):
-                w = random.random() * 2 - 1
-                self.weights[(i, j)] = w
+                if first:
+                    w = random.random() * 2 - 1
+                    self.weights[(i, j)] = w
+                else:
+                    w = self.weights[(i, j)]
                 pyrosim.Send_Synapse(f"sensor{i}", f"motor{j}", w)
 
         pyrosim.End()
