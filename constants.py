@@ -10,5 +10,3 @@ numberOfGenerations = 10
 populationSize = 10
 
 motorJointRange = 0.5
-
-seed = random.random()
