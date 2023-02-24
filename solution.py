@@ -9,6 +9,7 @@ import math
 class SOLUTION:
 
     def __init__(self, id):
+        random.seed(c.seed)
         self.myID = id
         self.globalTorsoNumber = 0
         self.globalLegNumber = 0
