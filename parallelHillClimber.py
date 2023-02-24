@@ -20,10 +20,10 @@ class PARALLEL_HILL_CLIMBER:
     # evaluate the parents, then evolve for all generations
     def Evolve(self):
         self.Evaluate(self.parents)
+        self.Write_Best()
         for currentGeneration in range(c.numberOfGenerations):
-            if currentGeneration == 0:
-                self.Show_Best()
             self.Evolve_For_One_Generation(currentGeneration)
+            self.Write_Best()
 
     # pretty self explanatory - check the called methods' descriptions
     def Evolve_For_One_Generation(self, gen):
@@ -68,6 +68,17 @@ class PARALLEL_HILL_CLIMBER:
                     best = parent
 
         best.Start_Simulation("GUI")
+
+    def Write_Best(self):
+        best = self.parents[0].fitness
+        if len(self.parents) != 1:
+            for parent in self.parents.values():
+                if parent.fitness > best:
+                    best = parent.fitness
+
+        f = open(f"{c.seed}best.txt", "a")
+        f.write(f"{best}\n")
+        f.close()
 
     def Print(self, gen):
         print(f'\n---------------GEN {gen+1}---------------')
