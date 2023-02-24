@@ -76,7 +76,7 @@ class PARALLEL_HILL_CLIMBER:
                 if parent.fitness > best:
                     best = parent.fitness
 
-        f = open(f"{c.seed}best.txt", "a")
+        f = open(f"fitnessCurves/{c.populationSize}_{c.numberOfGenerations}_{c.seed}.txt", "a")
         f.write(f"{best}\n")
         f.close()
 

@@ -17,6 +17,7 @@ class SOLUTION:
 
         self.sensorNeurons = [] # contains the feet numbers to add sensor neurons to
         self.motorNeurons = [] # contains the joint names to add motor neurons to
+        self.synapses = [] # contains the tuples (sensorNumber, motorNumber) for the brain synapses
         self.weights = {}
 
         # torso links are ones that have 2 legs coming out of them
@@ -134,8 +135,8 @@ class SOLUTION:
             pyrosim.Send_Motor_Neuron(f"motor{i}", self.motorNeurons[i])
 
         # connect each sensor neurons to the motor joints along its corresponding torso and the body joints
-        for key in self.weights.keys():
-            pyrosim.Send_Synapse(f"sensor{key[0]}", f"motor{key[1]}", self.weights[key])
+        for tup in self.synapses:
+            pyrosim.Send_Synapse(f"sensor{tup[0]}", f"motor{tup[1]}", self.weights[tup])
 
         pyrosim.End()
 
@@ -159,6 +160,7 @@ class SOLUTION:
 
         self.sensorNeurons.clear()
         self.motorNeurons.clear()
+        self.synapses.clear()
 
         # start by creating a torso link, position is global because root
         # the torso function will call other functions to create the body, so this is all we need to do, yay!
@@ -251,6 +253,7 @@ class SOLUTION:
             if multiplier != 0: start -= bodyAndTorsoJoints
             if multiplier == self.torsoSpecs["num"] - 1: end -= bodyAndTorsoJoints
             for j in range(start, end):
+                self.synapses.append((i, j))
                 if (i, j) not in self.weights:
                     self.weights[(i, j)] = random.random() * 2 - 1
 
