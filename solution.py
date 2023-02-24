@@ -9,7 +9,6 @@ import math
 class SOLUTION:
 
     def __init__(self, id):
-        random.seed(c.seed)
         self.myID = id
         self.globalTorsoNumber = 0
         self.globalLegNumber = 0
@@ -113,7 +112,7 @@ class SOLUTION:
             
     def Mutate_Size(self, specs, size):
         curVal = specs[size]
-        change = random.random() * 0.5 - 0.25
+        change = random.random() * 0.22 - 0.11
         if curVal + change > 0:
             specs[size] = curVal + change
         return specs

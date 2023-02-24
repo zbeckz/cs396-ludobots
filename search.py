@@ -6,9 +6,7 @@ import random
 c.numberOfGenerations = int(sys.argv[2])
 c.populationSize = int(sys.argv[1])
 if len(sys.argv) == 4:
-    c.seed = int(sys.argv[3])
-else:
-    c.seed = random.random()
+    random.seed(int(sys.argv[3]))
 phc = PARALLEL_HILL_CLIMBER()
 phc.Evolve()
 phc.Show_Best()
