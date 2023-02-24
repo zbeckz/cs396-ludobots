@@ -21,7 +21,9 @@ class PARALLEL_HILL_CLIMBER:
     def Evolve(self):
         self.Evaluate(self.parents)
         for currentGeneration in range(c.numberOfGenerations):
-           self.Evolve_For_One_Generation(currentGeneration)
+            if currentGeneration == 0:
+                self.Show_Best()   
+            self.Evolve_For_One_Generation(currentGeneration)
 
     # pretty self explanatory - check the called methods' descriptions
     def Evolve_For_One_Generation(self, gen):
@@ -64,6 +66,7 @@ class PARALLEL_HILL_CLIMBER:
             for parent in self.parents.values():
                 if parent.fitness > best.fitness:
                     best = parent
+
         best.Start_Simulation("GUI")
 
     def Print(self, gen):

@@ -10,12 +10,13 @@ import numpy as np
 class ROBOT:
 
     def __init__(self, solID):
-        self.robotId = p.loadURDF("body.urdf")
+        self.robotId = p.loadURDF(f"body{solID}.urdf")
         self.nn = NEURAL_NETWORK(f"brain{solID}.nndf")
         pyrosim.Prepare_To_Simulate(self.robotId)
         self.Prepare_To_Sense()
         self.Prepare_To_Act()
         os.system(f"del brain{solID}.nndf")
+        os.system(f"del body{solID}.urdf")
 
     # generate the sensors
     def Prepare_To_Sense(self):

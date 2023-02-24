@@ -14,6 +14,7 @@ class SOLUTION:
         self.globalLegNumber = 0
         self.globalBodyNumber = 0
         self.globalFootNumber = 0
+
         self.sensorNeurons = [] # contains the feet numbers to add sensor neurons to
         self.motorNeurons = [] # contains the joint names to add motor neurons to
         self.weights = {}
@@ -21,7 +22,7 @@ class SOLUTION:
         # torso links are ones that have 2 legs coming out of them
         self.torsoSpecs = {
             "num": random.randint(1, 5),           # number of torso links in the whole thing
-            "x": random.random() * 0.25 + 0.12,             # in the form of radii, not diameter
+            "x": random.random() * 0.25 + 0.02,             # in the form of radii, not diameter
             "y": random.random() * 0.25 + 0.02,
             "z": random.random() * 0.25 + 0.02
         }
@@ -29,7 +30,7 @@ class SOLUTION:
         # body links are ones that connect torso pieces, have no legs
         self.bodySpecs = {
             "num": random.randint(0, 2),           # number of body links between torso links
-            "x": random.random() * 0.25 + 0.12,
+            "x": random.random() * 0.25 + 0.02,
             "y": random.random() * 0.25 + 0.02,
             "z": random.random() * 0.25 + 0.02
         }
@@ -38,7 +39,7 @@ class SOLUTION:
         self.legSpecs = {
             "num": random.randint(1, 3),           # number of leg links per limb, horizontal links
             "x": random.random() * 0.25 + 0.02,
-            "y": random.random() * 0.25 + 0.06,
+            "y": random.random() * 0.25 + 0.02,
             "z": random.random() * 0.25 + 0.02
         }
 
@@ -46,25 +47,20 @@ class SOLUTION:
             "num": random.randint(1, 3),           # number of foot links per limb, vertical links
             "x": random.random() * 0.25 + 0.02,
             "y": random.random() * 0.25 + 0.02,
-            "z": random.random() * 0.25 + 0.06
+            "z": random.random() * 0.25 + 0.02
         }
-
-        # this is done so that the creature starts with its lowest point touching the ground
-        self.startHeight = self.footSpecs["num"]*2*self.footSpecs["z"]
-        if self.torsoSpecs["z"] > self.startHeight: self.startHeight = self.torsoSpecs["z"]
-        if self.bodySpecs["z"] > self.startHeight: self.startHeight = self.bodySpecs["z"]
-        if self.legSpecs["z"] > self.startHeight: self.startHeight = self.legSpecs["z"]
             
         self.Create_World()
         self.Create_Body()
-        self.Create_Brain(True)
+        self.Create_Brain()
 
     def Set_ID(self, id):
         self.myID = id
     
     # create the brain, simulate in background
     def Start_Simulation(self, directOrGUI):
-        self.Create_Brain(False)
+        self.Create_Body()
+        self.Create_Brain()
         if c.showErrors:
             os.system(f"start /B python simulate.py {directOrGUI} {self.myID}") 
         else:
@@ -85,12 +81,48 @@ class SOLUTION:
         self.Mutate_Brain()
 
     def Mutate_Body(self):
-        pass
+        num = random.random()
+        if num < 1/4:
+            self.torsoSpecs = self.Mutate_Specs(self.torsoSpecs)
+        elif num < 2/4:
+            self.bodySpecs = self.Mutate_Specs(self.bodySpecs)
+        elif num < 3/4:
+            self.legSpecs = self.Mutate_Specs(self.legSpecs)
+        else:
+            self.footSpecs = self.Mutate_Specs(self.footSpecs)
 
+    def Mutate_Specs(self, specs):
+        num = random.random()
+        if num < 1/4: # change num in specs
+            change = 1
+            if random.random() < 0.5:
+                change = -1
+            curVal = specs["num"]
+            curVal += change
+            if curVal != 0:
+                specs["num"] = curVal
+        elif num < 2/4: # change x
+            specs = self.Mutate_Size(specs, "x")
+        elif num < 3/4: # change y
+            specs = self.Mutate_Size(specs, "y")
+        else: # change z
+            specs = self.Mutate_Size(specs, "z")
+
+        return specs
+            
+    def Mutate_Size(self, specs, size):
+        curVal = specs[size]
+        change = random.random() * 0.5 - 0.25
+        if curVal + change > 0:
+            specs[size] = curVal + change
+        return specs
+
+    # randomly choose a synpaptic weight to change
     def Mutate_Brain(self):
-        pass
+        keysTuple = tuple(self.weights.keys())
+        self.weights[keysTuple[random.randint(0, len(keysTuple)-1)]] = random.random() * 2 - 1
 
-    def Create_Brain(self, first):
+    def Create_Brain(self):
         pyrosim.Start_NeuralNetwork(f"brain{self.myID}.nndf")
 
         # create a sensor neuron in each foot
@@ -102,22 +134,8 @@ class SOLUTION:
             pyrosim.Send_Motor_Neuron(f"motor{i}", self.motorNeurons[i])
 
         # connect each sensor neurons to the motor joints along its corresponding torso and the body joints
-        legAndFeetJoints = 2 * (self.legSpecs["num"] + self.footSpecs["num"])
-        bodyAndTorsoJoints = 1 + self.bodySpecs["num"]
-        for i in range(len(self.sensorNeurons)):
-            multiplier = math.floor(i/2)
-            increment = multiplier * (legAndFeetJoints + bodyAndTorsoJoints)
-            start = increment
-            end = increment + legAndFeetJoints + bodyAndTorsoJoints
-            if multiplier != 0: start -= bodyAndTorsoJoints
-            if multiplier == self.torsoSpecs["num"] - 1: end -= bodyAndTorsoJoints
-            for j in range(start, end):
-                if first:
-                    w = random.random() * 2 - 1
-                    self.weights[(i, j)] = w
-                else:
-                    w = self.weights[(i, j)]
-                pyrosim.Send_Synapse(f"sensor{i}", f"motor{j}", w)
+        for key in self.weights.keys():
+            pyrosim.Send_Synapse(f"sensor{key[0]}", f"motor{key[1]}", self.weights[key])
 
         pyrosim.End()
 
@@ -126,7 +144,21 @@ class SOLUTION:
         pyrosim.End()
 
     def Create_Body(self):  
-        pyrosim.Start_URDF("body.urdf")
+        pyrosim.Start_URDF(f"body{self.myID}.urdf")
+
+        # this is done so that the creature starts with its lowest point touching the ground
+        self.startHeight = self.footSpecs["num"]*2*self.footSpecs["z"]
+        if self.torsoSpecs["z"] > self.startHeight: self.startHeight = self.torsoSpecs["z"]
+        if self.bodySpecs["z"] > self.startHeight: self.startHeight = self.bodySpecs["z"]
+        if self.legSpecs["z"] > self.startHeight: self.startHeight = self.legSpecs["z"]
+
+        self.globalBodyNumber = 0
+        self.globalFootNumber = 0
+        self.globalLegNumber = 0
+        self.globalTorsoNumber = 0
+
+        self.sensorNeurons.clear()
+        self.motorNeurons.clear()
 
         # start by creating a torso link, position is global because root
         # the torso function will call other functions to create the body, so this is all we need to do, yay!
@@ -207,6 +239,21 @@ class SOLUTION:
         if localFootNum == self.footSpecs["num"] - 1: # bottom foot
             color = "Green"
             self.sensorNeurons.append(self.globalFootNumber)
+
+            # add synapse weight to put in brain later
+            legAndFeetJoints = 2 * (self.legSpecs["num"] + self.footSpecs["num"])
+            bodyAndTorsoJoints = 1 + self.bodySpecs["num"]
+            i = len(self.sensorNeurons) - 1
+            multiplier = math.floor(i/2)
+            increment = multiplier * (legAndFeetJoints + bodyAndTorsoJoints)
+            start = increment
+            end = increment + legAndFeetJoints + bodyAndTorsoJoints
+            if multiplier != 0: start -= bodyAndTorsoJoints
+            if multiplier == self.torsoSpecs["num"] - 1: end -= bodyAndTorsoJoints
+            for j in range(start, end):
+                if (i, j) not in self.weights:
+                    self.weights[(i, j)] = random.random() * 2 - 1
+
         pyrosim.Send_Cube(name=f"foot{self.globalFootNumber}", pos=position, size=[2*self.footSpecs["x"], 2*self.footSpecs["y"], 2*self.footSpecs["z"]], color=color)
         self.globalFootNumber += 1
 
