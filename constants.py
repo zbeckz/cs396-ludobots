@@ -4,7 +4,7 @@ showErrors = False
 
 gravity = -9.8
 maxForce = 50
-iterations = 500
+iterations = 1000
 
 numberOfGenerations = 10
 populationSize = 10

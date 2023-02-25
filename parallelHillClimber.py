@@ -30,7 +30,7 @@ class PARALLEL_HILL_CLIMBER:
         self.Spawn()
         self.Mutate()
         self.Evaluate(self.children)
-        self.Print(gen)
+        #self.Print(gen)
         self.Select()
 
     # simulate all given solutions in parallel, gathering fitness data internally
