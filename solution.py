@@ -71,9 +71,12 @@ class SOLUTION:
     def Wait_For_Simulation_To_End(self):
         while not os.path.exists(f"fitness{self.myID}.txt"):
             time.sleep(0.01)
-        f = open(f"fitness{self.myID}.txt", "r")
-        self.fitness = float(f.read())
-        f.close()
+        try:
+            f = open(f"fitness{self.myID}.txt", "r")
+            self.fitness = float(f.read())
+            f.close()
+        except:
+            pass
         os.system(f"del fitness{self.myID}.txt")
 
     # pick a random weight and change it to a random value
