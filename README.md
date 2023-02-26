@@ -19,10 +19,22 @@ Run "python analyze.py" to generate fitness curves for every file in *FitnessDat
 
 <img src="FitnessCurves/Curve1.png" width="50%" height="50%">
 
-**CREATURE GENERATION:**
+**BODY GENERATION:**
+
+The inspiration for my creatures was to resemble centipedes. I decided 4 distinct types of links were necessary for this, which I called Torso, Body, Leg, and Foot links:
+
+<img src="ReadmeImages/PhenotypeDiagram.jpg" width="50%" height="50%">
+
+The algorithm I created for generating the above creature simplifies to this:
+
+<img src="ReadmeImages/GenerationDiagram.jpg" width="50%" height="50%">
+
+And once put in code creates a creature like this:
 
 
 
-**CREATURE EVOLUTION:**
+**BRAIN GENERATION:**
 
-adf
+**BODY EVOLUTION:**
+
+**BRAIN EVOLUTION:**
