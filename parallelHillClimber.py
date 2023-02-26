@@ -27,7 +27,6 @@ class PARALLEL_HILL_CLIMBER:
         for currentGeneration in range(c.numberOfGenerations):
             self.Evolve_For_One_Generation(currentGeneration)
             self.Write_Best()
-        self.Show_Best()
 
     # pretty self explanatory - check the called methods' descriptions
     def Evolve_For_One_Generation(self, gen):
