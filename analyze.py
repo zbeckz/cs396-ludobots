@@ -1,15 +1,36 @@
 import numpy as np
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
+import os
 
-# backLegSensorValues = np.load("data/backLegSensorValues.npy")
-# frontLegSensorValues = np.load("data/frontLegSensorValues.npy")
-# matplotlib.pyplot.plot(backLegSensorValues, linewidth=4)
-# matplotlib.pyplot.plot(frontLegSensorValues)
-# matplotlib.pyplot.legend(["Back Leg", "Front Leg"])
-# matplotlib.pyplot.show()
-back = np.load("data/backTargetAngles.npy")
-front = np.load("data/frontTargetAngles.npy")
-matplotlib.pyplot.plot(back)
-matplotlib.pyplot.plot(front)
-matplotlib.pyplot.legend(["back", "front"])
-matplotlib.pyplot.show()
+# get all the files containing data
+files = os.listdir("FitnessData")
+if len(files) == 0:
+    print("NO DATA TO ANALYZE")
+    exit()
+
+# loop through the filenames
+legend = []
+for file in files:
+    
+    # get the metadata for the legend
+    splitName = file.split("_")
+    legend = f"{splitName[0]} Creatures, {splitName[1]} Generations, Seed {splitName[2][0]}"
+    
+    # read the data in
+    with open(f"FitnessData/{file}") as f:
+        data = []
+        for line in f:
+            num = line.split("\n")[0]
+            if num != '':
+                data.append(float(num))
+        plt.plot(data, label=legend)
+
+# format and plot
+plt.ylabel("Fitness")
+plt.xlabel("Generation Number")
+plt.title("Fitness Curves")
+plt.legend()
+
+# save the figure
+figNumber = len(os.listdir("FitnessCurves")) + 1
+plt.savefig(f"FitnessCurves/Curve{figNumber}.png")
