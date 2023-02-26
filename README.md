@@ -40,11 +40,12 @@ around the z-axis
 
 **BODY EVOLUTION:**
 
+Bodily evolution is simple. A random type of link is chosen to be mutated. One of the 4 parameters is chosen to be mutated (number, length, width, height). This parameter is changed by a random amount (float for size, integer for number), and there are checks in place to ensure nothing is 0 (except for body link number which cannot be negative)
+
 **BRAIN GENERATION:**
 
-The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link; this can be found in *solution.py*'
+The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this part is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link; this can be found in *solution.py*'
 
-
-<img src="ReadmeImages/SyanpseStructure.jpg" width="50%" height="50%">
+<img src="ReadmeImages/SynapseStructure.jpg" width="50%" height="50%">
 
 **BRAIN EVOLUTION:**
