@@ -9,7 +9,7 @@ https://youtu.be/YCHTICpxCiI
 
 Run "python search.py [*p*] [*g*] [*s*]" 
 
-Replace the words in brackets with numbers of your choice to randomly generate *p* creatures and evolve them in parallel for *g* generations. *s* is optional and represents a seed for the random number generator so that results can be reproduced - if no argument is included for *s* it will be randomly generated for you.
+Replace the words in brackets with numbers of your choice to randomly generate *p* creatures and evolve them in parallel for *g* generations. *s* is optional and represents a seed for the random number generator so that results can be reproduced - if no argument is included for *s* it will be randomly generated for you. All numbers must be positive integers.
 
 **INSTRUCTIONS FOR ANALYSIS:**
 
@@ -44,7 +44,7 @@ Bodily evolution is simple. A random type of link is chosen to be mutated. One o
 
 **BRAIN GENERATION:**
 
-The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this part is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link; this can be found in *solution.py*' Every synapse is given a random weight between -1 and 1
+The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this part is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link which can be found in *solution.py*'. Every synapse is given a random weight between -1 and 1
 
 <img src="ReadmeImages/SynapseStructure.jpg" width="50%" height="50%">
 
