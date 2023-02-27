@@ -13,7 +13,7 @@ Replace the words in brackets with numbers of your choice to randomly generate *
 
 **INSTRUCTIONS FOR ANALYSIS:**
 
-After running search.py the evolution, a file will have been created into a directory *FitnessData*. The file will have name "*p*_*g*_*s*.txt" and will contain be the best fitness for each generation on a new line.
+After running search.py the evolution, a file will have been created into a directory *FitnessData*. The file will have name "*p*\_*g*\_*s*.txt" and will contain be the best fitness for each generation on a new line.
 
 Run "python analyze.py" to generate fitness curves for every file in *FitnessData*, which are all plotted on the same figure. This figure will be saved into the *FitnessCurves* directory as a png file. These figures are generated using matplotlib. Here is an example of one such curve:
 
