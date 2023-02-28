@@ -9,11 +9,11 @@ https://youtu.be/YCHTICpxCiI
 
 Run "python search.py [*p*] [*g*] [*s*]" 
 
-Replace the words in brackets with numbers of your choice to randomly generate *p* creatures and evolve them in parallel for *g* generations. *s* is optional and represents a seed for the random number generator so that results can be reproduced - if no argument is included for *s* it will be randomly generated for you.
+Replace the words in brackets with numbers of your choice to randomly generate *p* creatures and evolve them in parallel for *g* generations. *s* is optional and represents a seed for the random number generator so that results can be reproduced - if no argument is included for *s* it will be randomly generated for you. All numbers must be positive integers.
 
 **INSTRUCTIONS FOR ANALYSIS:**
 
-After running search.py the evolution, a file will have been created into a directory *FitnessData*. The file will have name "*p*_*g*_*s*.txt" and will contain be the best fitness for each generation on a new line.
+After running search.py the evolution, a file will have been created into a directory *FitnessData*. The file will have name "*p*\_*g*\_*s*.txt" and will contain be the best fitness for each generation on a new line.
 
 Run "python analyze.py" to generate fitness curves for every file in *FitnessData*, which are all plotted on the same figure. This figure will be saved into the *FitnessCurves* directory as a png file. These figures are generated using matplotlib. Here is an example of one such curve:
 
@@ -40,11 +40,14 @@ around the z-axis
 
 **BODY EVOLUTION:**
 
+Bodily evolution is simple. A random type of link is chosen to be mutated. One of the 4 parameters is chosen to be mutated (number, length, width, height). This parameter is changed by a random amount (float for size, integer for number), and there are checks in place to ensure nothing is 0 (except for body link number which cannot be negative)
+
 **BRAIN GENERATION:**
 
-The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link; this can be found in *solution.py*'
+The brain consists of sensor neurons in every bottom foot (colored green in the simulation) and motor neurons in every joint. Coding this part is straightforward - the complexity arises from the synaptic structure. A sensor neuron for a given foot is connected to every joint up the foot, through the leg, and within the foot and leg coming out of the same torso link. It will also be connected to the Torso_Body joints that connect its torso to the next torso link in either direction, a drawing of which can be seen below. This is done in code via math involving the parameters that determine the number of each type of link which can be found in *solution.py*'. Every synapse is given a random weight between -1 and 1
 
-
-<img src="ReadmeImages/SyanpseStructure.jpg" width="50%" height="50%">
+<img src="ReadmeImages/SynapseStructure.jpg" width="50%" height="50%">
 
 **BRAIN EVOLUTION:**
+
+The brain evolves by picking a random synapse and changing its weight to a random number. If there are new links in the body's mutation, new synapses are created accordingly with random weights. If there were links removed in the body's mutation, those synapses are removed.
