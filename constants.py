@@ -12,3 +12,5 @@ populationSize = 10
 motorJointRange = 0.5
 
 seed = 1
+
+numTorso = 1

@@ -22,7 +22,7 @@ class SOLUTION:
 
         # torso links are ones that have 2 legs coming out of them
         self.torsoSpecs = {
-            "num": random.randint(1, 5),           # number of torso links in the whole thing
+            "num": c.numTorso,           # number of torso links in the whole thing
             "x": random.random() * 0.25 + 0.02,             # in the form of radii, not diameter
             "y": random.random() * 0.25 + 0.02,
             "z": random.random() * 0.25 + 0.02
@@ -92,13 +92,22 @@ class SOLUTION:
     def Mutate_Body(self):
         num = random.random()
         if num < 1/4:
-            self.torsoSpecs = self.Mutate_Specs(self.torsoSpecs)
+            self.Mutate_Torso()
         elif num < 2/4:
             self.bodySpecs = self.Mutate_Specs(self.bodySpecs)
         elif num < 3/4:
             self.legSpecs = self.Mutate_Specs(self.legSpecs)
         else:
             self.footSpecs = self.Mutate_Specs(self.footSpecs)
+
+    def Mutate_Torso(self):
+        num = random.random()
+        if num < 1/3: # change x
+            self.torsoSpecs = self.Mutate_Size(self.torsoSpecs, "x")
+        elif num < 2/3: # change y
+            self.torsoSpecs = self.Mutate_Size(self.torsoSpecs, "y")
+        else: # change z
+            self.torsoSpecs = self.Mutate_Size(self.torsoSpecs, "z")
 
     def Mutate_Specs(self, specs):
         num = random.random()
