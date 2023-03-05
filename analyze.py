@@ -8,14 +8,18 @@ if len(files) == 0:
     print("NO DATA TO ANALYZE")
     exit()
 
+firstBlue = True
+firstGreen = True
+firstRed = True
+firstYellow = True
+
 # loop through the filenames
-legend = []
 for file in files:
     
     # get the metadata for the legend
-    splitName = file.split("_")
-    legend = f"{splitName[0]} Creatures, {splitName[1]} Generations, {splitName[2]} Legs, Seed {splitName[3].split('.')[0]}"
-    
+    numLegs = file.split("_")[2]
+    label = numLegs + " Legs"
+
     # read the data in
     with open(f"FitnessData/{file}") as f:
         data = []
@@ -23,12 +27,40 @@ for file in files:
             num = line.split("\n")[0]
             if num != '':
                 data.append(float(num))
-        plt.plot(data, label=legend)
+        if numLegs == '2':
+            color = "b-"
+            if firstBlue:
+                plt.plot(data, color, label=label)
+                firstBlue = False
+            else:
+                plt.plot(data, color)
+        elif numLegs == '4':
+            color = "g-"
+            if firstGreen:
+                plt.plot(data, color, label=label)
+                firstGreen = False
+            else:
+                plt.plot(data, color)
+        elif numLegs == '6':
+            color = "r-"
+            if firstRed:
+                plt.plot(data, color, label=label)
+                firstRed = False
+            else:
+                plt.plot(data, color)
+        else:
+            color = "y-"
+            if firstYellow:
+                plt.plot(data, color, label=label)
+                firstYellow = False
+            else:
+                plt.plot(data, color)
+        
 
 # format and plot
 plt.ylabel("Fitness")
 plt.xlabel("Generation Number")
-plt.title("Fitness Curves")
+plt.title("25 Creature, 200 Generation Fitness Curves")
 plt.legend()
 
 # save the figure
