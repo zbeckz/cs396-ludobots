@@ -14,7 +14,7 @@ for file in files:
     
     # get the metadata for the legend
     splitName = file.split("_")
-    legend = f"{splitName[0]} Creatures, {splitName[1]} Generations, Seed {splitName[2][0]}"
+    legend = f"{splitName[0]} Creatures, {splitName[1]} Generations, {splitName[2]} Legs, Seed {splitName[3].split('.')[0]}"
     
     # read the data in
     with open(f"FitnessData/{file}") as f:
