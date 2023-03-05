@@ -14,8 +14,8 @@ else:
     print("\nERROR: Please input an even number of legs\n")
     exit()
 if len(sys.argv) == 5:
-    random.seed(int(sys.argv[3]))
-    c.seed = int(sys.argv[3])
+    random.seed(int(sys.argv[4]))
+    c.seed = int(sys.argv[4])
 else:
     c.seed = random.randint(2222, 22222)
     random.seed(c.seed)
