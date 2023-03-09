@@ -1,5 +1,3 @@
-import random
-
 showErrors = False
 
 gravity = -9.8

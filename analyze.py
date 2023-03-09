@@ -10,7 +10,7 @@ if len(files) == 0:
 
 firstBlue = True
 firstGreen = True
-firstRed = True
+firstBlack = True
 firstYellow = True
 
 # loop through the filenames
@@ -42,10 +42,10 @@ for file in files:
             else:
                 plt.plot(data, color)
         elif numLegs == '6':
-            color = "r-"
-            if firstRed:
+            color = "k-"
+            if firstBlack:
                 plt.plot(data, color, label=label)
-                firstRed = False
+                firstBlack = False
             else:
                 plt.plot(data, color)
         else:
@@ -60,7 +60,7 @@ for file in files:
 # format and plot
 plt.ylabel("Fitness")
 plt.xlabel("Generation Number")
-plt.title("25 Creature, 200 Generation Fitness Curves")
+plt.title(input("Enter Plot Title: "))
 plt.legend()
 
 # save the figure
