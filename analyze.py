@@ -8,56 +8,63 @@ if len(files) == 0:
     print("NO DATA TO ANALYZE")
     exit()
 
-firstBlue = True
-firstGreen = True
-firstBlack = True
-firstYellow = True
+# set up dictionaries for appropriate plotting
+plotSpecs = {
+    '2': {
+        'color': 'b-',
+        'first': True,
+        'vals': []
+    },
+    
+    '4': {
+        'color': 'g-',
+        'first': True,
+        'vals': []
+    },
+}
 
 # loop through the filenames
 for file in files:
     
     # get the metadata for the legend
-    numLegs = file.split("_")[2]
+    splitFile = file.split("_")
+    numLegs = splitFile[2]
+    numGenerations = int(splitFile[1])
     label = numLegs + " Legs"
 
-    # read the data in
+    # open the file
     with open(f"FitnessData/{file}") as f:
-        data = []
+        data = np.zeros(numGenerations + 1)
+        i = 0
+        
+        # read the data in
         for line in f:
             num = line.split("\n")[0]
             if num != '':
-                data.append(float(num))
-        if numLegs == '2':
-            color = "b-"
-            if firstBlue:
-                plt.plot(data, color, label=label)
-                firstBlue = False
-            else:
-                plt.plot(data, color)
-        elif numLegs == '4':
-            color = "g-"
-            if firstGreen:
-                plt.plot(data, color, label=label)
-                firstGreen = False
-            else:
-                plt.plot(data, color)
-        elif numLegs == '6':
-            color = "k-"
-            if firstBlack:
-                plt.plot(data, color, label=label)
-                firstBlack = False
-            else:
-                plt.plot(data, color)
-        else:
-            color = "y-"
-            if firstYellow:
-                plt.plot(data, color, label=label)
-                firstYellow = False
-            else:
-                plt.plot(data, color)
-        
+                data[i] = float(num)
+                i += 1
 
-# format and plot
+        plotSpecs[numLegs]['vals'].append(data[numGenerations])
+
+        # plot
+        if plotSpecs[numLegs]['first']:
+            plt.plot(data, plotSpecs[numLegs]['color'], label=label, linewidth=1.0)
+            plotSpecs[numLegs]['first'] = False
+        else:
+            plt.plot(data, plotSpecs[numLegs]['color'], linewidth=1.0)
+
+# construct confidence intervals
+for n in ['2', '4']:
+    if not plotSpecs[n]['first']:
+        data = plotSpecs[n]['vals']
+        mean = np.mean(data)
+        std = np.std(data)
+
+        # plot confidence interval
+        plt.plot(np.full(numGenerations + 1, mean + 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.0, label=f"{n} Legs Confidence Interval")
+        plt.plot(np.full(numGenerations + 1, mean - 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.0)
+
+# format
 plt.ylabel("Fitness")
 plt.xlabel("Generation Number")
 plt.title(input("Enter Plot Title: "))
