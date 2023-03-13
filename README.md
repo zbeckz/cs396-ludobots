@@ -70,19 +70,21 @@ VIDEO TO BE PLACED HERE
 
 To run this experiment, I altered the body generation to have a fixed number of legs at the start. When the user runs *search.py*, they specify the number of legs they'd like. This information is passed into *constants.py*, and then accessed in the constructor of *solution.py*. Every torso link is defined to have 2 legs coming out of it, so the number of torso links at the start is defined to be *numLegs*/2 rather than a randomly generated number as it was previously. Even with a fixed number of legs, such as 2, a wide variety of bodies can be randomly generated:
 
-IMAGES HERE
+<img src="ReadmeImages/biped1.png" width="20%" height="20%">  <img src="ReadmeImages/biped2.png" width="20%" height="20%">  <img src="ReadmeImages/biped3.png" width="20%" height="20%">
 
 The body mutation also had to be altered. It was previously possible for the number of torso links (and thus legs) to be mutated, but I changed it so this parameter cannot be changed. This was done by changing some functions in *solution.py*, where the code that controls mutation can be found.
 
 Now that number of legs is fixed, simulations can be run. My control group was quadrupeds - I ran 10 separate simulations of 10 quadrupedal creatures evolving for 500 generations. The experimental group was 10 separate simulations of 10 bipedal creatures evolving for 500 generations. The seeds for all of these simulations were randomly chosen within the code, as in I ran "python search.py 10 500 [numLegs]" with no 4th argument.
 
-The data for all 20 of these simulations can be found in the *FitnessData* directory. As a reminder, the random seed accompanying each simulation is the final number in the name of the associated .txt file. So, to verify these results, one could run "python search.py 10 500 [numLegs] [seed]" for every text file and will get the same results.
+The data for all 20 of these simulations can be found in the *FitnessData* directory. As a reminder, the numbers in each text file indicate the arguments that *search.py* was run with, as seen here: 
 
-I changed analyze.py to plot fitness curves for all of the data where the number of legs determines the color of the line, and created the plot shown in the next section.
+<kbd><img src="ReadmeImages/name.png"></kbd>
+
+So, to verify these results, one could run "python search.py [numCreatures] [numGenerations] [numLegs] [seed]" for every .txt file and should get the same results.
  
 ### Results
 
-This was the first plot created:
+I implemented code in *analyze.py* to plot fitness curves that show the best creature at every generation for every simulation, where the color of the curve indicates how many legs the creatures in that simulation were fixed at:
 
 <img src="ReadmeImages/NoInterval.png" width="50%" height="50%">
 
