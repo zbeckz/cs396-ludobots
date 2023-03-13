@@ -10,7 +10,7 @@ class PARALLEL_HILL_CLIMBER:
         os.system("del brain*.nndf")
         os.system("del fitness*.txt")
         os.system("del body*.urdf")
-        os.system(f"del FitnessData/{c.populationSize}_{c.numberOfGenerations}_{int(c.numTorso*2)}_{c.seed}.txt")
+        os.system(f"del FitnessData\{c.populationSize}_{c.numberOfGenerations}_{int(c.numTorso*2)}_{c.seed}.txt")
 
         # create random parents to evolve
         self.nextAvailableID = 0
