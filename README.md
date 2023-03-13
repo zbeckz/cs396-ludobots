@@ -72,6 +72,10 @@ The body mutation also had to be altered. It was previously possible for the num
 
 Now that number of legs is fixed, simulations can be run. My control group was quadrupeds - I ran 10 separate simulations of 10 quadrupedal creatures evolving for 500 generations. The experimental group was 10 separate simulations of 10 bipedal creatures evolving for 500 generations. The seeds for all of these simulations were randomly chosen within the code, as in I ran "python search.py 10 500 [numLegs]" with no 4th argument.
 
+The data for all 20 of these simulations can be found in the *FitnessData* directory. As a reminder, the random seed accompanying each simulation is the final number in the name of the associated .txt file. So, to verify these results, one could run "python search.py 10 500 [numLegs] [seed]" for every text file and will get the same results.
+
+I changed analyze.py to plot fitness curves for all of the data where the number of legs determines the color of the line, and created the plot shown in the next section.
+ 
 ### Results
 
 ### Conclusion
