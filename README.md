@@ -1,5 +1,5 @@
 # CS396 - Final Project - Scientist Option
-This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet. The fitness of a creature is determined by how far in the negative x direction (left and into the screen) it reaches by the end of the simulation. The goal of this assignment is the create and test a hypothesis regarding the evolution of these virtual creatures - this hypothesis and experiment can be found at the bottom of this page along with a short summary video.
+This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet. The goal of this assignment is the create and test a hypothesis regarding the evolution of these virtual creatures - this hypothesis and experiment can be found at the bottom of this page along with a short summary video.
 
 ### Body Generation
 
@@ -35,6 +35,10 @@ The brain consists of sensor neurons in every bottom foot (colored green in the 
 The brain evolves by picking a random synapse and changing its weight to a random number. If there are new links in the body's mutation, new synapses are created accordingly with random weights. If there were links removed in the body's mutation, those synapses are removed.
 
 ### Evolutionary Algorithm
+
+The fitness of a creature is determined by how far in the negative x direction (left and into the screen, as seen highlighted in red below) it reaches by the end of the simulation.
+
+<img src="ReadmeImages/Axes.png" width="50%" height="50%">
 
 I am using a parallel hill climber to perform evolution. Any number of creatures can be chosen to evolve for any number of generations. Each creature is randomly generated to start. For every generation, each creature creates a "child" creature that is identical to itself aside from 1 bodily mutation and 1 neurological mutation, as described in the evolution sections above. If the child performs better than its parent, it replaces the parent along that creature's lineage. Otherwise, the parent continues. All creatures undergo this process in parallel, generation by generation, and the fitness values are printed to the terminal, as seen here:
 
@@ -78,4 +82,32 @@ I changed analyze.py to plot fitness curves for all of the data where the number
  
 ### Results
 
+This was the first plot created:
+
+<img src="ReadmeImages/NoInterval.png" width="50%" height="50%">
+
+From a quick glance, there is no striking difference between quadrupedal and bipedal creatures. The quadrupeds appear to be clumped slightly higher than the bipeds, which is the opposite of my hypothesis. The graph is not conclusive, however, so I decided to add code to *analyze.py* that outputs the average final fitness for bipeds and quadrupeds along with their standard deviations:
+
+<img src="ReadmeImages/AnalysisOutput.png" width="35%" height="35%">
+
+This supports the claim that the quadrupeds have higher final fitness value on average. But, given the relatively small difference in means and small sample size of only 10, I decided to add code to *analyze.py* to display a 95% confidence interval for the mean final fitness for bipeds and quadrupeds using the following formula with z = 1.96 (image from https://datatab.net/tutorial/confidence-interval):
+
+<kbd><img src="ReadmeImages/formula.png"></kbd>
+
+The following plot was produced:
+
+<img src="ReadmeImages/95Percent.png" width="50%" height="50%">
+
+As can be seen in the above plot, the intervals are overlapping and thus inconclusive. Typically, 95% confidence intervals are what is expected for conclusive evidence in an experiment. But out of curiosity, I wanted to find the highest percentage confidence intervals that don't overlap. Through trial and error, I found that 70% confidence intervals (z = 1.03) look pretty good:
+
+<img src="ReadmeImages/70Percent.png" width="50%" height="50%">
+
+The code in *analyze.py* right now would produce the plot with 95% confidence intervals as well as printing the statistics to the terminal. Lines 68 and 69 can be altered to produce confidence intervals for different percentages if the 1.96 is changed to another z value.
+
 ### Conclusion
+
+In conclusion, no evidence was found to support the hypothesis that bipedal creatures achieve higher fitness values than quadrupedal creatures. In fact, I could say with 70% confidence that quadrupeds have a better mean final fitness value than bipeds based on my data, though this is not a high enough probability to make that conclusion. There is stil a 30% chance that the true mean fitness values are identical or the bipedal is higher.
+
+If I had more time, I would absolutely run more simulations for 2 legged and 4 legged creatures. Maybe with a sample size greater than 10, proper confidence intervals could be constructed to support my hypothesis (or, it seems more likely, the opposite of my hypothesis). I would also be curious to test other amounts of legs too. Maybe the more legs the better? Or maybe 4 is a goldilocks zone where more legs is too much.
+
+If anyone stumbles across this and wants to use my code base to conduct their own experiments, feel free! Please cite my work of course and definitely let me know what you discover. Thank you for reading!
