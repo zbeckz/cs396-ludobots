@@ -36,9 +36,11 @@ The brain evolves by picking a random synapse and changing its weight to a rando
 
 ### Evolutionary Algorithm
 
-I am using a parallel hill climber to perform evolution. Any number of creatures can be chosen to evolve for any number of generations. Each creature is randomly generated to start. For every generation, each creature creates a "child" creature that is identical to itself aside from 1 bodily mutation and 1 neurological mutation, as described in the evolution sections above. If the child performs better than its parent, it replaces the parent along that creature's lineage. Otherwise, the parent continues. All creatures undergo this process in parallel, generation by generation, and the fitness values are printed to the terminal, as seen below:
+I am using a parallel hill climber to perform evolution. Any number of creatures can be chosen to evolve for any number of generations. Each creature is randomly generated to start. For every generation, each creature creates a "child" creature that is identical to itself aside from 1 bodily mutation and 1 neurological mutation, as described in the evolution sections above. If the child performs better than its parent, it replaces the parent along that creature's lineage. Otherwise, the parent continues. All creatures undergo this process in parallel, generation by generation, and the fitness values are printed to the terminal, as seen here:
 
-IMAGE TO BE PLACED HERE
+<img src="ReadmeImages/HillClimbingOutput.png" width="20%" height="20%">
+
+The above image also does an excellent job illustrating how hill climbing works. Examining the 3rd creature, we can see that in generation 5 the child has better fitness than the parent. So, the child replaces the parent, and in generation 6 we see that the parent's fitness is the same as generation 5's child's fitness because it has been replaced. In generation 6, the child's fitness is worse than the parent, so no change is kept for the next generation. Then, in generation 7, again the child is an improvement from the parent so it replaces the parent for the next generation.
 
 ### Hypothesis
 
@@ -61,6 +63,14 @@ VIDEO TO BE PLACED HERE
 -  The best creature of the first generation will be shown at the beginning, and the best creature of the final generation will be shown at the end
 
 ### Experimental Design
+
+To run this experiment, I altered the body generation to have a fixed number of legs at the start. When the user runs *search.py*, they specify the number of legs they'd like. This information is passed into *constants.py*, and then accessed in the constructor of *solution.py*. Every torso link is defined to have 2 legs coming out of it, so the number of torso links at the start is defined to be *numLegs*/2 rather than a randomly generated number as it was previously. Even with a fixed number of legs, such as 2, a wide variety of bodies can be randomly generated:
+
+IMAGES HERE
+
+The body mutation also had to be altered. It was previously possible for the number of torso links (and thus legs) to be mutated, but I changed it so this parameter cannot be changed. This was done by changing some functions in *solution.py*, where the code that controls mutation can be found.
+
+Now that number of legs is fixed, simulations can be run. My control group was quadrupeds - I ran 10 separate simulations of 10 quadrupedal creatures evolving for 500 generations. The experimental group was 10 separate simulations of 10 bipedal creatures evolving for 500 generations. The seeds for all of these simulations were randomly chosen within the code, as in I ran "python search.py 10 500 [numLegs]" with no 4th argument.
 
 ### Results
 
