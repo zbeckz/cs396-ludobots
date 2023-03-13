@@ -48,10 +48,10 @@ for file in files:
 
         # plot
         if plotSpecs[numLegs]['first']:
-            plt.plot(data, plotSpecs[numLegs]['color'], label=label, linewidth=1.0)
+            plt.plot(data, plotSpecs[numLegs]['color'], label=label, linewidth=0.5)
             plotSpecs[numLegs]['first'] = False
         else:
-            plt.plot(data, plotSpecs[numLegs]['color'], linewidth=1.0)
+            plt.plot(data, plotSpecs[numLegs]['color'], linewidth=0.5)
 
 # construct confidence intervals
 for n in ['2', '4']:
@@ -60,9 +60,13 @@ for n in ['2', '4']:
         mean = np.mean(data)
         std = np.std(data)
 
+        # print statistics
+        print(f"{n} Legs Mean:               {mean}")
+        print(f"{n} Legs Standard Deviation: {std}\n")
+
         # plot confidence interval
-        plt.plot(np.full(numGenerations + 1, mean + 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.0, label=f"{n} Legs Confidence Interval")
-        plt.plot(np.full(numGenerations + 1, mean - 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.0)
+        plt.plot(np.full(numGenerations + 1, mean + 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.5, label=f"{n} Legs Confidence Interval")
+        plt.plot(np.full(numGenerations + 1, mean - 1.96*std/np.sqrt(len(data))), f"{plotSpecs[n]['color']}-", alpha=0.5, linewidth=1.5)
 
 # format
 plt.ylabel("Fitness")
