@@ -1,6 +1,14 @@
 # CS396 - Final Project - Scientist Option
 This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet. The goal of this assignment is the create and test a hypothesis regarding the evolution of these virtual creatures - this hypothesis and experiment can be found at the bottom of this page along with a short summary video.
 
+### Teaser
+
+
+
+### Summary
+
+
+
 ### Body Generation
 
 The inspiration for my creatures was to resemble centipedes. I decided 4 distinct types of links were necessary for this, which I called Torso, Body, Leg, and Foot links:
@@ -49,14 +57,6 @@ The above image also does an excellent job illustrating how hill climbing works.
 ### Hypothesis
 
 My hypothesis was that bipedal creatures were able to achieve better fitness than quadrupedal creatures under my evolutionary conditons. This was inspired by my work done for assignment eight, as seen in the *assignmentEight* branch of this repository. It seemed to me that the creatures that ended up bipedal achieved better looking gaits. Perhaps this was due to having more simple bodies that allowed the brain to be more optimized, or perhaps this was due to my bias as a bipedal human. There's only one way to find out - run an experiment!
-
-### Teaser
-
-https://user-images.githubusercontent.com/67024963/224883873-3a905d21-1cbd-4972-b629-c2e37488881c.mp4
-
-### Summary
-
-VIDEO TO BE PLACED HERE
 
 ### Executable
 
