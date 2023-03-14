@@ -1,13 +1,39 @@
 # CS396 - Final Project - Scientist Option
-This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet. The goal of this assignment is the create and test a hypothesis regarding the evolution of these virtual creatures - this hypothesis and experiment can be found at the bottom of this page along with a short summary video.
+This code base was built For CS396 at Northwestern University. Its foundation was written by following the MOOC found on the subreddit r/ludobots, which includes forking the PryoSim repository https://github.com/jbongard/pyrosim.git. The physics is simulated using PyBullet. The goal of this assignment is the create and test a hypothesis regarding the evolution of these virtual creatures. Click on the thumbnails in the **Teaser** and **Summary** sections to take you to the corresponding YouTube video. Enjoy!
+
+## README Sections
+
+[Teaser](#teaser)
+
+[Summary](#summary)
+
+[Body Generation](#body-generation)
+
+[Body Evolution](#body-evolution)
+
+[Brain Generation](#brain-generation)
+
+[Brain Evolution](#brain-evolution)
+
+[Evolutionary Algorithm](#evolutionary-algorithm)
+
+[Hypothesis](#hypothesis)
+
+[Executable](#executable)
+
+[Experimental Design](#experimental-design)
+
+[Results](#results)
+
+[Conclusion](#conclusion)
 
 ### Teaser
 
-
+[![Click to see 10 second teaser!](http://img.youtube.com/vi/R1NDEP3jPIY/0.jpg)](https://www.youtube.com/watch?v=R1NDEP3jPIY)
 
 ### Summary
 
-
+[![Click to see 10 second teaser!](http://img.youtube.com/vi/E_1FXsDCTeI/0.jpg)](https://www.youtube.com/watch?v=E_1FXsDCTeI)
 
 ### Body Generation
 
