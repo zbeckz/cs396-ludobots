@@ -74,7 +74,7 @@ To run this experiment, I altered the body generation to have a fixed number of 
 
 The body mutation also had to be altered. It was previously possible for the number of torso links (and thus legs) to be mutated, but I changed it so this parameter cannot be changed. This was done by changing some functions in *solution.py*, where the code that controls mutation can be found.
 
-Now that number of legs is fixed, simulations can be run. My control group was quadrupeds - I ran 10 separate simulations of 10 quadrupedal creatures evolving for 500 generations. The experimental group was 10 separate simulations of 10 bipedal creatures evolving for 500 generations. The seeds for all of these simulations were randomly chosen within the code, as in I ran "python search.py 10 500 [numLegs]" with no 4th argument.
+Now that number of legs is fixed, simulations can be run. My control group was quadrupeds - I ran 10 separate simulations of 10 quadrupedal creatures evolving for 500 generations. The experimental group was 10 separate simulations of 10 bipedal creatures evolving for 500 generations. The seeds for all of these simulations were randomly chosen within the code, as in I ran "python search.py 10 500 [numLegs]" with no 4th argument. This was a total of 100,000 individual fitness tests, which is above our required 50,000 for class and enough that I thought I could get some usable data.
 
 The data for all 20 of these simulations can be found in the *FitnessData* directory. As a reminder, the numbers in each text file indicate the arguments that *search.py* was run with, as seen here: 
 
