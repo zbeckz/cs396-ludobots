@@ -52,7 +52,7 @@ My hypothesis was that bipedal creatures were able to achieve better fitness tha
 
 ### Teaser
 
-VIDEO TO BE PLACED HERE
+https://user-images.githubusercontent.com/67024963/224883873-3a905d21-1cbd-4972-b629-c2e37488881c.mp4
 
 ### Summary
 
